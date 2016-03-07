@@ -34,7 +34,7 @@ public class MainGameMenu extends Application {
         Pane root = new Pane();
         root.setPrefSize(800, 600);
 
-        InputStream is = Files.newInputStream(Paths.get("res/images/main_menu.jpg"));
+        InputStream is = Files.newInputStream(Paths.get("res/images/main_menu.png"));
         Image img = new Image(is);
         is.close();
 
@@ -52,7 +52,8 @@ public class MainGameMenu extends Application {
                     FadeTransition ft = new FadeTransition(Duration.seconds(0.5), gameMenu);
                     ft.play();
         });
-
+        primaryStage.setTitle("Hell guardians");
+        
         primaryStage.setScene(scene);
         primaryStage.show();
     }
