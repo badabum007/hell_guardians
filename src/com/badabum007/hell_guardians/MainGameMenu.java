@@ -3,7 +3,6 @@ package com.badabum007.hell_guardians;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -21,7 +20,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class MainGameMenu extends Application {
 
@@ -48,10 +46,7 @@ public class MainGameMenu extends Application {
         root.getChildren().addAll(imgView, gameMenu);
 
         Scene scene = new Scene(root);
-        scene.setOnKeyPressed(event -> {
-                    FadeTransition ft = new FadeTransition(Duration.seconds(0.5), gameMenu);
-                    ft.play();
-        });
+
         primaryStage.setTitle("Hell guardians");
         
         primaryStage.setScene(scene);
@@ -65,21 +60,8 @@ public class MainGameMenu extends Application {
             menu0.setTranslateX(550);
             menu0.setTranslateY(450);
 
-            MenuButton btnResume = new MenuButton("Resume");
-            btnResume.setOnMouseClicked(event -> {
-                FadeTransition ft = new FadeTransition(Duration.seconds(0.5), this);
-                ft.setFromValue(1);
-                ft.setToValue(0);
-                ft.play();
-            });
-            
-            MenuButton btnNewGame = new MenuButton("New game");
-            btnNewGame.setOnMouseClicked(event -> {
-                FadeTransition ft = new FadeTransition(Duration.seconds(0.5), this);
-                ft.setFromValue(1);
-                ft.setToValue(0);
-                ft.play();
-            });
+            MenuButton btnResume = new MenuButton("Resume");   
+            MenuButton btnNewGame = new MenuButton("New game");       
 
             MenuButton btnExit = new MenuButton("Exit");
             btnExit.setOnMouseClicked(event -> {
@@ -87,12 +69,7 @@ public class MainGameMenu extends Application {
             });
 
             menu0.getChildren().addAll(btnResume, btnNewGame, btnExit);
-
-            Rectangle bg = new Rectangle(800, 600);
-            bg.setFill(Color.GREY);
-            bg.setOpacity(0.4);
-
-            getChildren().addAll(bg, menu0);
+            getChildren().add(menu0);
         }
     }
 
