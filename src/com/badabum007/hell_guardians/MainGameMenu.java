@@ -18,6 +18,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -27,40 +30,66 @@ import javafx.stage.Stage;
 public class MainGameMenu extends Application {
 
 	private GameMenu gameMenu;
-
+	public Stage theStage = new Stage();
+	public Pane root = new Pane();
+	
+	public Pane gameRoot = new Pane();
+	public Scene gameScene = new Scene(gameRoot);
+	
+	public MediaPlayer menuMp;
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
-		Pane root = new Pane();
+	
+		theStage = primaryStage;
+		
+		//menu content adding
+		Media media= new Media(new File("res/music/Gonzalo_Varela_-_06_-_Abandoned_Souls.mp3").toURI().toString());
+		menuMp = new MediaPlayer(media);
+		menuMp.setAutoPlay(true);
+		menuMp.setCycleCount(MediaPlayer.INDEFINITE);
+		menuMp.play();
+		MediaView mediaView = new MediaView(menuMp);
+		
 		root.setPrefSize(800, 600);
 
 		InputStream is = Files.newInputStream(Paths.get("res/images/main_menu.png"));
 		Image img = new Image(is);
 		is.close();
-
+		
 		ImageView imgView = new ImageView(img);
 		imgView.setFitWidth(800);
 		imgView.setFitHeight(600);
-		
-		primaryStage.setMinWidth(800);        
-		primaryStage.setMinHeight(600);
 
-		primaryStage.setMaxWidth(800);        
-		primaryStage.setMaxHeight(600);
-		
+		theStage.setMinWidth(800);        
+		theStage.setMinHeight(600);
+
+		theStage.setMaxWidth(800);        
+		theStage.setMaxHeight(600);
+
 		gameMenu = new GameMenu();
 		gameMenu.setVisible(true);
 
-		root.getChildren().addAll(imgView, gameMenu);
+		root.getChildren().addAll(mediaView, imgView, gameMenu);
 
 		Scene scene = new Scene(root);
 
-		primaryStage.setTitle("Hell guardians");
+		theStage.setTitle("Hell Guardians");
 
-		primaryStage.setScene(scene);
-		primaryStage.getIcons().add(new Image("file:res/images/icon.png"));
-		primaryStage.show();
+		theStage.setScene(scene);
+		theStage.getIcons().add(new Image("file:res/images/icon.png"));
+		
+		
+		//game content adding		
+		gameRoot.setPrefSize(800, 600);
+		is = Files.newInputStream(Paths.get("res/images/field_texture.jpg"));
+		img = new Image(is);
+		is.close();
+		
+		theStage.show();
 	}
+	
+
 
 	private class GameMenu extends Parent {
 		public GameMenu() throws FileNotFoundException {
@@ -70,7 +99,16 @@ public class MainGameMenu extends Application {
 			menu0.setTranslateY(450);
 
 			MenuButton btnResume = new MenuButton("Resume"); 
-			MenuButton btnNewGame = new MenuButton("New game");       
+			MenuButton btnNewGame = new MenuButton("New game");
+			btnNewGame.setOnMouseClicked(event -> {
+				try {
+					menuMp.stop();
+					theStage.setScene(gameScene);
+					//GameWindow.start(primaryStage);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
 
 			MenuButton btnExit = new MenuButton("Exit");
 			btnExit.setOnMouseClicked(event -> {
@@ -85,26 +123,20 @@ public class MainGameMenu extends Application {
 	private static class MenuButton extends StackPane {
 		private Text text;
 
-		public MenuButton(String name) {
+		public MenuButton(String name) throws FileNotFoundException {
 			text = new Text(name);
 			text.getFont();
 			Font font;
-			try {
-				font = Font.loadFont(new FileInputStream(new File("res/fonts/Kankin.otf")), 20);
-				text.setFont(font); 
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-
+			font = Font.loadFont(new FileInputStream(new File("res/fonts/Kankin.otf")), 20);
+			text.setFont(font); 
 			text.setFill(Color.WHITE);
 
 			Rectangle bg = new Rectangle(250, 30);
-			bg.setOpacity(0.6);
+			bg.setOpacity(0.5);
 			bg.setFill(Color.BLACK);
 			bg.setEffect(new GaussianBlur(3.5));
 
 			setAlignment(Pos.CENTER_LEFT);
-			setRotate(-0.5);
 			getChildren().addAll(bg, text);
 
 			setOnMouseEntered(event -> {
