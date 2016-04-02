@@ -3,6 +3,7 @@ package com.badabum007.hell_guardians;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -10,11 +11,14 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -30,33 +34,36 @@ import javafx.stage.Stage;
 public class MainGameMenu extends Application {
 
 	private GameMenu gameMenu;
+	private TowerMenu towerMenu;
+	private Scores_n_money scores_n_money;
+
 	public Stage theStage = new Stage();
 	public Pane root = new Pane();
-	
+
 	public Pane gameRoot = new Pane();
 	public Scene gameScene = new Scene(gameRoot);
-	
+
 	public MediaPlayer menuMp;
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-	
+
 		theStage = primaryStage;
-		
+
 		//menu content adding
 		Media media= new Media(new File("res/music/Gonzalo_Varela_-_06_-_Abandoned_Souls.mp3").toURI().toString());
 		menuMp = new MediaPlayer(media);
-		menuMp.setAutoPlay(true);
+		//menuMp.setAutoPlay(true);
 		menuMp.setCycleCount(MediaPlayer.INDEFINITE);
-		menuMp.play();
+		//menuMp.play();
 		MediaView mediaView = new MediaView(menuMp);
-		
+
 		root.setPrefSize(800, 600);
 
 		InputStream is = Files.newInputStream(Paths.get("res/images/main_menu.png"));
 		Image img = new Image(is);
 		is.close();
-		
+
 		ImageView imgView = new ImageView(img);
 		imgView.setFitWidth(800);
 		imgView.setFitHeight(600);
@@ -78,18 +85,101 @@ public class MainGameMenu extends Application {
 
 		theStage.setScene(scene);
 		theStage.getIcons().add(new Image("file:res/images/icon.png"));
-		
-		
+
+
 		//game content adding		
 		gameRoot.setPrefSize(800, 600);
 		is = Files.newInputStream(Paths.get("res/images/field_texture.jpg"));
 		img = new Image(is);
 		is.close();
+
+		imgView = new ImageView(img);
+		imgView.setFitWidth(800);
+		imgView.setFitHeight(600);
+
+		towerMenu = new TowerMenu();
+		towerMenu.setVisible(true);
+
+		scores_n_money = new Scores_n_money();
+		scores_n_money.setVisible(true);
 		
+		gameRoot.getChildren().addAll(imgView, towerMenu, scores_n_money);
+
 		theStage.show();
 	}
-	
 
+	private class TowerMenu extends Parent {
+		public TowerMenu() throws IOException {
+			HBox menu0 = new HBox(0);
+			menu0.setTranslateX(50);
+
+			InputStream is = Files.newInputStream(Paths.get("res/images/sarcher.png"));
+			Image img = new Image(is);
+			ImageView imgView = new ImageView(img);
+			imgView.setFitWidth(70);
+			imgView.setPreserveRatio(true);
+			Button tower1 = new Button("100", imgView);
+			tower1.setContentDisplay(ContentDisplay.TOP);
+			
+			is = Files.newInputStream(Paths.get("res/images/hellhound.png"));
+			img = new Image(is);
+			imgView = new ImageView(img);
+			imgView.setFitWidth(70);
+			imgView.setPreserveRatio(true);
+			Button tower2 = new Button("150", imgView);
+			tower2.setContentDisplay(ContentDisplay.TOP);
+			/*MenuButton btnTower1 = new MenuButton("T1"); 
+			MenuButton btnTower2 = new MenuButton("T2");
+			btnTower1.setOnMouseClicked(event -> {
+				try {
+					menuMp.stop();
+					theStage.setScene(gameScene);
+					//GameWindow.start(primaryStage);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+
+			MenuButton btnTower3 = new MenuButton("T3");
+			btnTower3.setOnMouseClicked(event -> {
+				//System.exit(0);
+			});
+
+			menu0.getChildren().addAll(btnTower1, btnTower2, btnTower3);*/
+			is.close();
+		    menu0.getChildren().addAll(tower1, tower2);
+			getChildren().add(menu0);
+		}
+	}
+
+	private class Scores_n_money extends Parent {
+		public Scores_n_money() throws IOException {
+			HBox menu0 = new HBox(0);
+			menu0.setTranslateX(600);
+
+			InputStream is = Files.newInputStream(Paths.get("res/images/souls.png"));
+			Image img = new Image(is);
+			ImageView imgView = new ImageView(img);
+			imgView.setFitWidth(50);
+			imgView.setPreserveRatio(true);
+			String souls = "0";
+			Button btnSoul = new Button(souls , imgView);
+			btnSoul.setContentDisplay(ContentDisplay.TOP);
+			
+			is = Files.newInputStream(Paths.get("res/images/score.png"));
+			img = new Image(is);
+			imgView = new ImageView(img);
+			imgView.setFitWidth(50);
+			imgView.setPreserveRatio(true);
+			String score = "0";
+			Button btnScore = new Button(score, imgView);
+			btnScore.setContentDisplay(ContentDisplay.TOP);
+			
+			is.close();
+		    menu0.getChildren().addAll(btnSoul, btnScore);
+			getChildren().add(menu0);
+		}
+	}
 
 	private class GameMenu extends Parent {
 		public GameMenu() throws FileNotFoundException {
