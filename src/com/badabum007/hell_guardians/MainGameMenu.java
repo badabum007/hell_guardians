@@ -194,7 +194,7 @@ public class MainGameMenu extends Application {
 				try {
 					menuMp.stop();
 					theStage.setScene(gameScene);
-					//GameWindow.start(primaryStage);
+					GameWindow.show(theStage);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
