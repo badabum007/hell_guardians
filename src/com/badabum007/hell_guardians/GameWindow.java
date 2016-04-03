@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,7 +21,7 @@ import javafx.stage.Stage;
 
 public class GameWindow {
 	private   TowerMenu towerMenu;
-	private  Scores_n_money scores_n_money;
+	private   Scores_n_money scores_n_money;
 	private  Pane gameRoot = new Pane();
 	private  Scene gameScene = new Scene(gameRoot);
 
@@ -36,19 +37,13 @@ public class GameWindow {
 		towerMenu = new TowerMenu();
 		towerMenu.setVisible(true);
 
+		is.close();
+
 		scores_n_money = new Scores_n_money();
 		scores_n_money.setVisible(true);
 
-		Text t = new Text(150, 150, "This is a test");
-		t.setFont(new Font(20));
-		t.setFill(Color.GREY);
-
-		is.close();
-
-		gameRoot.getChildren().addAll(imgView,towerMenu, scores_n_money, t);
-
+		gameRoot.getChildren().addAll(imgView, towerMenu, scores_n_money);
 		primaryStage.setScene(gameScene);
-		//drag_end2();
 	}
 
 	private class TowerMenu extends Parent {
@@ -73,38 +68,93 @@ public class GameWindow {
 			tower2.setContentDisplay(ContentDisplay.TOP);
 
 			is.close();
+			drag_end2();
 
 			menu0.getChildren().addAll(tower1, tower2);
 			getChildren().add(menu0);
 		}
 	}
 
-	private class Scores_n_money extends Parent {
-		public Scores_n_money() throws IOException {
-			HBox menu0 = new HBox(0);
-			menu0.setTranslateX(600);
+	/*private void drag_end() throws IOException{
+	Point p = MouseInfo.getPointerInfo().getLocation();
 
+	InputStream is = Files.newInputStream(Paths.get("res/images/sarcher_sprites.png"));
+	Image img = new Image(is);
+
+	ImageView imgView = new ImageView(img);
+	imgView.setViewport(new Rectangle2D(0, 125, 90, 125));
+	imgView.setTranslateX(p.getX());
+	imgView.setTranslateY(p.getY());
+
+	System.out.println("Drag completed");
+
+	is.close();
+
+	gameRoot.getChildren().add(imgView);
+}*/
+
+	private void drag_end2() throws IOException{
+		InputStream is = Files.newInputStream(Paths.get("res/images/sarcher_sprites.png"));
+		Image img = new Image(is);
+
+		ImageView imgView = new ImageView(img);
+		imgView.setViewport(new Rectangle2D(0, 125, 90, 125));
+		imgView.setTranslateX(300);
+		imgView.setTranslateY(200);
+		imgView.toFront();
+
+		is.close();
+
+		gameRoot.getChildren().add(imgView);
+	}
+
+	private class Scores_n_money extends Parent {
+		private Integer scores, money;
+		Text sc, m;
+		private Pane sm;
+		
+		public Scores_n_money() throws IOException {
+			sm = new Pane();
+			
 			InputStream is = Files.newInputStream(Paths.get("res/images/souls.png"));
 			Image img = new Image(is);
 			ImageView imgView = new ImageView(img);
 			imgView.setFitWidth(50);
 			imgView.setPreserveRatio(true);
-			String souls = "0";
-			Button btnSoul = new Button(souls , imgView);
-			btnSoul.setContentDisplay(ContentDisplay.TOP);
+			imgView.setTranslateX(620);
 
 			is = Files.newInputStream(Paths.get("res/images/score.png"));
 			img = new Image(is);
-			imgView = new ImageView(img);
-			imgView.setFitWidth(50);
-			imgView.setPreserveRatio(true);
-			String score = "0";
-			Button btnScore = new Button(score, imgView);
-			btnScore.setContentDisplay(ContentDisplay.TOP);
+			ImageView imgView2 = new ImageView(img);
+			imgView2.setFitWidth(50);
+			imgView2.setPreserveRatio(true);
+			imgView2.setTranslateX(680);
 
 			is.close();
-			menu0.getChildren().addAll(btnSoul, btnScore);
-			getChildren().add(menu0);
+			
+			scores = 0;
+			money = 0;
+			
+			sc = new Text(680, 70, scores.toString());
+			sc.setFont(new Font(20));
+			sc.setFill(Color.GREY);
+			
+			m = new Text(620, 70, money.toString());
+			m.setFont(new Font(20));
+			m.setFill(Color.GREY);
+			
+			sm.getChildren().addAll(imgView, imgView2, sc, m);
+			getChildren().add(sm);
+		}
+		
+		public void setMoney(Integer x){
+			money = x;
+			m.setText(x.toString());
+		}
+		
+		public void setScores(Integer x){
+			scores = x;
+			sc.setText(x.toString());			
 		}
 	}
 }

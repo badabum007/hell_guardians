@@ -79,38 +79,6 @@ public class MainGameMenu extends Application {
 		is.close();
 		theStage.show();
 	}
-	
-	/*private void drag_end() throws IOException{
-		Point p = MouseInfo.getPointerInfo().getLocation();
-		
-		InputStream is = Files.newInputStream(Paths.get("res/images/sarcher_sprites.png"));
-		Image img = new Image(is);
-
-		ImageView imgView = new ImageView(img);
-		imgView.setViewport(new Rectangle2D(0, 125, 90, 125));
-		imgView.setTranslateX(p.getX());
-		imgView.setTranslateY(p.getY());
-		
-		System.out.println("Drag completed");
-		
-		is.close();
-		
-		gameRoot.getChildren().add(imgView);
-	}
-	
-	private void drag_end2() throws IOException{
-		InputStream is = Files.newInputStream(Paths.get("res/images/sarcher_sprites.png"));
-		Image img = new Image(is);
-
-		ImageView imgView = new ImageView(img);
-		imgView.setViewport(new Rectangle2D(0, 125, 90, 125));
-		imgView.setTranslateX(300);
-		imgView.setTranslateY(200);
-		
-		is.close();
-		
-		gameRoot.getChildren().add(imgView);
-	}*/
 
 	private class GameMenu extends Parent {
 		public GameMenu() throws FileNotFoundException {
