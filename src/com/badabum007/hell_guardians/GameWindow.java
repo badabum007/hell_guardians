@@ -48,10 +48,6 @@ public class GameWindow {
 		scores_n_money = new Scores_n_money();
 		scores_n_money.setVisible(true);
 
-		gameRoot.setOnDragDropped(event -> {
-			System.out.println("OK");
-			event.consume();
-		});	
 
 		gameRoot.getChildren().addAll(imgView, towerMenu, scores_n_money);
 		primaryStage.setScene(gameScene);
@@ -69,13 +65,7 @@ public class GameWindow {
 			imgView.setPreserveRatio(true);
 			Button tower1 = new Button("100", imgView);
 			tower1.setContentDisplay(ContentDisplay.TOP);
-
-			tower1.setOnDragDetected(new EventHandler<MouseEvent>() {
-				public void handle(MouseEvent event){
-					System.out.println("Entered");
-					event.consume();
-				}
-			});			      
+    
 
 			is = Files.newInputStream(Paths.get("res/images/hellhound.png"));
 			img = new Image(is);
@@ -85,15 +75,8 @@ public class GameWindow {
 			Button tower2 = new Button("150", imgView);
 			tower2.setContentDisplay(ContentDisplay.TOP);
 
-			tower2.setOnDragDropped(new EventHandler<DragEvent>() {
-			      public void handle(DragEvent event) {
-			    	  System.out.println("LOL");
-			          event.consume();
-			       }
-			  });
 			
 			is.close();
-			drag_end2();
 
 			menu0.getChildren().addAll(tower1, tower2);
 			getChildren().add(menu0);
@@ -117,21 +100,6 @@ public class GameWindow {
 
 	gameRoot.getChildren().add(imgView);
 }*/
-
-	private void drag_end2() throws IOException{
-		InputStream is = Files.newInputStream(Paths.get("res/images/sarcher_sprites.png"));
-		Image img = new Image(is);
-
-		ImageView imgView = new ImageView(img);
-		imgView.setViewport(new Rectangle2D(0, 125, 90, 125));
-		imgView.setTranslateX(300);
-		imgView.setTranslateY(200);
-		imgView.toFront();
-
-		is.close();
-
-		gameRoot.getChildren().add(imgView);
-	}
 
 	private class Scores_n_money extends Parent {
 		private Integer scores, money;

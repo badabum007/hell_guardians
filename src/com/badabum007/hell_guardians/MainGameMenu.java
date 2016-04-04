@@ -43,12 +43,12 @@ public class MainGameMenu extends Application {
 		theStage = primaryStage;
 
 		//menu content adding
-		Media media= new Media(new File("res/music/Gonzalo_Varela_-_06_-_Abandoned_Souls.mp3").toURI().toString());
-		menuMp = new MediaPlayer(media);
+		//Media media= new Media(new File("res/music/Gonzalo_Varela_-_06_-_Abandoned_Souls.mp3").toURI().toString());
+		//menuMp = new MediaPlayer(media);
 		//menuMp.setAutoPlay(true);
-		menuMp.setCycleCount(MediaPlayer.INDEFINITE);
+		//menuMp.setCycleCount(MediaPlayer.INDEFINITE);
 		//menuMp.play();
-		MediaView mediaView = new MediaView(menuMp);
+		//MediaView mediaView = new MediaView(menuMp);
 
 		root.setPrefSize(800, 600);
 
@@ -68,7 +68,7 @@ public class MainGameMenu extends Application {
 		gameMenu = new GameMenu();
 		gameMenu.setVisible(true);
 
-		root.getChildren().addAll(mediaView, imgView, gameMenu);
+		root.getChildren().addAll( imgView, gameMenu);
 
 		Scene scene = new Scene(root);
 
