@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,6 +13,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -42,6 +48,11 @@ public class GameWindow {
 		scores_n_money = new Scores_n_money();
 		scores_n_money.setVisible(true);
 
+		gameRoot.setOnDragDropped(event -> {
+			System.out.println("OK");
+			event.consume();
+		});	
+
 		gameRoot.getChildren().addAll(imgView, towerMenu, scores_n_money);
 		primaryStage.setScene(gameScene);
 	}
@@ -59,6 +70,13 @@ public class GameWindow {
 			Button tower1 = new Button("100", imgView);
 			tower1.setContentDisplay(ContentDisplay.TOP);
 
+			tower1.setOnDragDetected(new EventHandler<MouseEvent>() {
+				public void handle(MouseEvent event){
+					System.out.println("Entered");
+					event.consume();
+				}
+			});			      
+
 			is = Files.newInputStream(Paths.get("res/images/hellhound.png"));
 			img = new Image(is);
 			imgView = new ImageView(img);
@@ -67,6 +85,13 @@ public class GameWindow {
 			Button tower2 = new Button("150", imgView);
 			tower2.setContentDisplay(ContentDisplay.TOP);
 
+			tower2.setOnDragDropped(new EventHandler<DragEvent>() {
+			      public void handle(DragEvent event) {
+			    	  System.out.println("LOL");
+			          event.consume();
+			       }
+			  });
+			
 			is.close();
 			drag_end2();
 
@@ -112,10 +137,10 @@ public class GameWindow {
 		private Integer scores, money;
 		Text sc, m;
 		private Pane sm;
-		
+
 		public Scores_n_money() throws IOException {
 			sm = new Pane();
-			
+
 			InputStream is = Files.newInputStream(Paths.get("res/images/souls.png"));
 			Image img = new Image(is);
 			ImageView imgView = new ImageView(img);
@@ -131,27 +156,27 @@ public class GameWindow {
 			imgView2.setTranslateX(680);
 
 			is.close();
-			
+
 			scores = 0;
 			money = 0;
-			
+
 			sc = new Text(680, 70, scores.toString());
 			sc.setFont(new Font(20));
 			sc.setFill(Color.GREY);
-			
+
 			m = new Text(620, 70, money.toString());
 			m.setFont(new Font(20));
 			m.setFill(Color.GREY);
-			
+
 			sm.getChildren().addAll(imgView, imgView2, sc, m);
 			getChildren().add(sm);
 		}
-		
+
 		public void setMoney(Integer x){
 			money = x;
 			m.setText(x.toString());
 		}
-		
+
 		public void setScores(Integer x){
 			scores = x;
 			sc.setText(x.toString());			

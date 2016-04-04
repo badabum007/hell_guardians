@@ -87,7 +87,7 @@ public class MainGameMenu extends Application {
 			menu0.setTranslateX(550);
 			menu0.setTranslateY(450);
 
-			MenuButton btnResume = new MenuButton("Resume"); 
+			//MenuButton btnResume = new MenuButton("Resume"); 
 			MenuButton btnNewGame = new MenuButton("New game");
 			btnNewGame.setOnMouseClicked(event -> {
 				try {
@@ -103,7 +103,7 @@ public class MainGameMenu extends Application {
 				System.exit(0);
 			});
 
-			menu0.getChildren().addAll(btnResume, btnNewGame, btnExit);
+			menu0.getChildren().addAll( btnNewGame, btnExit);
 			getChildren().add(menu0);
 		}
 	}
