@@ -19,19 +19,20 @@ import javafx.stage.Stage;
 
 public class GameWindow {
   public static final int BLOCK_SIZE = 100;
-  
+  public static final int offsetXY = 100;
+
   private   TowerMenu towerMenu;
   private   Scores_n_money scores_n_money;
 
   static GameRoot gameRoot;
   private  Scene gameScene;
   static Pane All;
-  
+
   public  void show(Stage primaryStage) throws IOException{
     gameRoot = new GameRoot();
     Pane All = new Pane();
     gameScene = new Scene(All);
-    
+
     //setting field
     int height = 600, width = 800;
     All.setPrefSize(width, height);
@@ -48,7 +49,7 @@ public class GameWindow {
 
     scores_n_money = new Scores_n_money();
     scores_n_money.setVisible(true);
-    
+
     GameRoot.GameMode = "Normal";
     gameRoot.setVisible(true);
     gameRoot.StartGame();

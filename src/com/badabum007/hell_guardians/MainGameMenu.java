@@ -37,13 +37,15 @@ public class MainGameMenu extends Application {
 
   private Pane root;
   private GameWindow gameWindow;
-  
+
   //music player object
   private MediaPlayer menuMp;
+  
+  public final static int height = 600, width = 800;
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    
+
     root = new Pane();
     gameWindow = new GameWindow();
     theStage = new Stage();
@@ -61,7 +63,6 @@ public class MainGameMenu extends Application {
     menuMp.play();
     MediaView mediaView = new MediaView(menuMp);
 
-    int height = 600, width = 800;
     //window size
     root.setPrefSize(width, height);
 
