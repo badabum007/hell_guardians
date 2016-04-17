@@ -140,7 +140,7 @@ public class GameRoot extends Pane {
           double EnemyPosY = Spawn[i].enemies.get(j).getTranslateY();
           double TowerPosX = Towers.get(k).getTranslateX();
           double TowerPosY = Towers.get(k).getTranslateY();
-          if ((EnemyPosX - TowerPosX > 0) && (TowerPosY - EnemyPosY == 0))
+          if ((EnemyPosX - TowerPosX > 0) && (TowerPosY - EnemyPosY == 0) && (EnemyPosX < MainGameMenu.width - GameWindow.offsetXY))
             // Условие проверки на Cooldown
             if (Towers.get(k).TimeToShoot <= 0){
               // Установка Cooldown

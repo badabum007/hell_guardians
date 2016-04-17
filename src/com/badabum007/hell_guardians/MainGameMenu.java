@@ -27,20 +27,23 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * This class is representing title screen menu
+ * @author badabum007
+ */
 public class MainGameMenu extends Application {
 
-  //define the stage as public for communication between interface classes
+  /** define the stage as public for communication between interface classes */
   public Stage theStage;
-
-  //create object for our buttons
+  /** create object for our buttons */
   private GameMenu gameMenu;
-
+  /** layout for our title screen menu */
   private Pane root;
+  /** object of our class for all gaming stuff */
   private GameWindow gameWindow;
-
-  //music player object
+  /** music player object */
   private MediaPlayer menuMp;
-  
+  /** our stage parameters */
   public final static int height = 600, width = 800;
 
   @Override
@@ -51,35 +54,36 @@ public class MainGameMenu extends Application {
     theStage = new Stage();
     theStage = primaryStage;
 
-    //menu content adding
+    /** menu content adding */
 
-    //adding music
-    Media media= new Media(new File("res/music/Gonzalo_Varela_-_06_-_Abandoned_Souls.mp3").toURI().toString());
+    /** adding music */
+    Media media= new Media(new File("res/music/Gonzalo_Varela_-_06_-_Abandoned_Souls.mp3")
+        .toURI().toString());
     menuMp = new MediaPlayer(media);
-    //autostart when program is launched
+    /** autostart when program is launched */
     menuMp.setAutoPlay(true);
-    //infinite song playing
+    /** infinite song playing */
     menuMp.setCycleCount(MediaPlayer.INDEFINITE);
     menuMp.play();
     MediaView mediaView = new MediaView(menuMp);
 
-    //window size
+    /** window size */
     root.setPrefSize(width, height);
 
-    //setting background
+    /** setting background */
     InputStream is = Files.newInputStream(Paths.get("res/images/main_menu.png"));
     Image img = new Image(is);
     ImageView imgView = new ImageView(img);
     imgView.setFitWidth(width);
     imgView.setFitHeight(height);
 
-    //disable window resize
+    /** disable window resize */
     theStage.setMinWidth(width);        
     theStage.setMinHeight(height);
     theStage.setMaxWidth(width);        
     theStage.setMaxHeight(height);
 
-    //initializing our menu
+    /** initializing our menu */
     gameMenu = new GameMenu();
     gameMenu.setVisible(true);
 
@@ -94,9 +98,17 @@ public class MainGameMenu extends Application {
     theStage.show();
   }
 
-  //menu class
+  /**
+   * Title menu buttons container
+   * @author badabum007
+   */
   private class GameMenu extends Parent {
-    public GameMenu() throws FileNotFoundException {
+
+    /**
+     * Adds all necessary buttons and sets their behavior
+     * @throws FileNotFoundException
+     */ 
+    public GameMenu() throws  FileNotFoundException{
       int distBetweenButtons = 10;
       VBox menu0 = new VBox(distBetweenButtons);
 
@@ -108,7 +120,7 @@ public class MainGameMenu extends Application {
       MenuButton btnNewGame = new MenuButton("New game");
       btnNewGame.setOnMouseClicked(event -> {
         try {
-          //stop playing and change scene
+          /** stop playing and change scene */
           menuMp.stop();
           gameWindow.show(theStage);
         } catch (Exception e) {
@@ -126,20 +138,30 @@ public class MainGameMenu extends Application {
     }
   }
 
-  //button class
+  /**
+   * Creates a single menu button
+   * @author badabum007
+   */ 
   private static class MenuButton extends StackPane {
+    //button label
     private Text text;
 
+    /**
+     * Creates a single button and adds button effects
+     * @throws FileNotFoundException
+     * @param name - button name
+     */ 
     public MenuButton(String name) throws FileNotFoundException {
       //setting font
       text = new Text(name);
       text.getFont();
+      //load custom font
       Font font;
       font = Font.loadFont(new FileInputStream(new File("res/fonts/Kankin.otf")), 20);
       text.setFont(font); 
       text.setFill(Color.WHITE);
 
-      //adding rectangle over button
+      /** adding rectangle over button */
       int rectWidth = 250, rectHeight = 30;
       Rectangle bg = new Rectangle(rectWidth, rectHeight);
       double opacityLevel = 0.5, blurLevel = 3.5;
@@ -147,10 +169,11 @@ public class MainGameMenu extends Application {
       bg.setFill(Color.BLACK);
       bg.setEffect(new GaussianBlur(blurLevel));
 
-      //setting effects
+      /** setting effects */
       setAlignment(Pos.CENTER_LEFT);
       getChildren().addAll(bg, text);
 
+      /** rectangle shuffling on mouse entering/exiting */
       setOnMouseEntered(event -> {
         int translateButtonForwardX = 10;
         bg.setTranslateX(translateButtonForwardX);
@@ -167,10 +190,10 @@ public class MainGameMenu extends Application {
         text.setFill(Color.WHITE);
       });
 
+      /** glow effect on mouse press */
       int dropShadowRange = 50;
       DropShadow drop = new DropShadow(dropShadowRange, Color.WHITE);
       drop.setInput(new Glow());
-
       setOnMousePressed(event -> setEffect(drop));
       setOnMouseReleased(event -> setEffect(null));
     }

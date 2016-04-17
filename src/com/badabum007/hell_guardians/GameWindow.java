@@ -1,5 +1,6 @@
 package com.badabum007.hell_guardians;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -36,7 +37,7 @@ public class GameWindow {
     //setting field
     int height = 600, width = 800;
     All.setPrefSize(width, height);
-    InputStream is = Files.newInputStream(Paths.get("res/images/field_texture.jpg"));
+    InputStream is = Files.newInputStream(Paths.get("res/images/texture.jpg"));
     Image img = new Image(is);
     ImageView imgView = new ImageView(img);
     imgView.setFitWidth(width);
