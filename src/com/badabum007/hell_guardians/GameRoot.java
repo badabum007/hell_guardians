@@ -26,7 +26,10 @@ public class GameRoot extends Pane {
 
   final int rows = 4;
   final int columns = 6;
-  final int timeToNextMove = 5;
+  final double timeToNextMob = 100;
+  
+  final int updateFrequence = 10000000;
+  //10000000
 
   /** Имеющиеся на карте Спаунеры */
   Spawner[] Spawn = new Spawner[rows];
@@ -37,7 +40,7 @@ public class GameRoot extends Pane {
 
   public void StartGame()throws IOException{
     CreateMap();
-    int enemyCount = 1;
+    int enemyCount = 2;
     for (int i = 0; i < rows; i++){
       Spawn[i] = new Spawner(enemyCount, MainGameMenu.width,GameWindow.offsetXY + i*GameWindow.BLOCK_SIZE);
     }
@@ -51,17 +54,22 @@ public class GameRoot extends Pane {
       public void handle(long now){
         EveryTick++;
         // 55 тиков ~= 1 сек
-        if (EveryTick > timeToNextMove){
+        if (EveryTick > timeToNextMob){
           EveryTick = 0;
           for (int i = 0; i < rows; i++){
             if (Spawn[i].iterator < Spawn[i].count)
               try {
                 Spawn[i].CreateMonster();
+                if (now / updateFrequence != FrameTimer.get()){
+                    Spawn[i].update();
+                }
+                FrameTimer.set(now / updateFrequence);
               } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
               }
           }
+        }
           /*if (GameMode == "Auto"){
           EveryTickForBot++;
           // 165 тиков ~= 3 сек
@@ -79,15 +87,14 @@ public class GameRoot extends Pane {
           }
         }*/
           //Обновление местоположения монстров с интервалом 0.01 сек
-          if (now / 10000000 != FrameTimer.get()){
+          if (now / updateFrequence != FrameTimer.get()){
             for (int i = 0; i < rows; i++){
-              Spawn[0].update();
+              Spawn[i].update();
             }
           }
-          FrameTimer.set(now / 10000000);
+          FrameTimer.set(now / updateFrequence);
           //CheckForShootTimer.set(now / 100000000);
         }
-      }
     };
     timer.start();
   }
@@ -105,4 +112,3 @@ public class GameRoot extends Pane {
     }
   }
 }
-
