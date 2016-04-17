@@ -21,6 +21,14 @@ public class Tower extends Pane {
   /** ѕозици€ вышки, радиус атаки, ее размеры и производимый выстрел */
   double posX;
   double posY;
+  double attackRange = MainGameMenu.width - GameWindow.offsetXY;
+  Shot shots;
+  
+  /** Cooldown на выстрел вышки */
+  final double ShootCooldown = 10;
+  
+  /** —колько времени осталось до выстрела */
+  double TimeToShoot;
 
   SpriteAnimation animation;
 
@@ -40,6 +48,8 @@ public class Tower extends Pane {
    * @throws IOException 
    */
   public Tower(double x, double y) throws IOException{
+    TimeToShoot = 0;
+    
     InputStream is = Files.newInputStream(Paths.get("res/images/sarcher_sprites.png"));
     Image img = new Image(is);
     is.close();
@@ -59,9 +69,6 @@ public class Tower extends Pane {
         );
     animation.setCycleCount(Animation.INDEFINITE);
     animation.play();
-    getChildren().add(imageView);
-    GameWindow.gameRoot.getChildren().add(this);
-
     getChildren().add(imageView);
     GameWindow.gameRoot.getChildren().add(this);
   }
