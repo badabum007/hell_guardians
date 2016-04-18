@@ -50,7 +50,6 @@ public class GameWindow {
     scores_n_money = new Scores_n_money();
     scores_n_money.setVisible(true);
 
-    gameRoot.GameMode = "Normal";
     gameRoot.setVisible(true);
     gameRoot.StartGame();
 

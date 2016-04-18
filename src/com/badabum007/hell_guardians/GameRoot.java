@@ -2,10 +2,15 @@ package com.badabum007.hell_guardians;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -43,7 +48,6 @@ public class GameRoot extends Pane {
 
   public static final int rows = 4;
   public static final int columns = 6;
-  final double timeToNextMob = 100;
 
   final int updateFrequence = 10000000;
 
@@ -53,10 +57,13 @@ public class GameRoot extends Pane {
   /**
    * Метод, реализующий логику игры
    */
+  
+  int enemyCount = 2;
+  long TimeToNextWave = 500;
+  final long timeToNextMob = 100;
 
   public void StartGame()throws IOException{
     CreateMap();
-    int enemyCount = 2;
     for (int i = 0; i < rows; i++){
       Spawn[i] = new Spawner(enemyCount, MainGameMenu.width,GameWindow.offsetXY + i*GameWindow.BLOCK_SIZE);
     }
@@ -65,26 +72,48 @@ public class GameRoot extends Pane {
     final LongProperty FrameTimer = new SimpleLongProperty(0);
     AnimationTimer timer = new AnimationTimer(){
       long EveryTick = 0;
+      long WaveTick = 0;
       //long EveryTickForBot = 0;
       @Override
       public void handle(long now){
         EveryTick++;
+        WaveTick++;
         // 55 тиков ~= 1 сек
         if (EveryTick > timeToNextMob){
           EveryTick = 0;
-          for (int i = 0; i < rows; i++){
+          if (WaveTick > TimeToNextWave){
+            TimeToNextWave += timeToNextMob;
+            enemyCount += 1;
+            for (int i = 0; i < rows; i++){
+              Spawn[i].count += enemyCount;
+              WaveTick = 0;
+            }
+          }
+          for (int i = 0; i < rows; i++)
             if (Spawn[i].iterator < Spawn[i].count)
               try {
                 Spawn[i].CreateMonster();
                 if (now / updateFrequence != FrameTimer.get()){
-                  Spawn[i].update();
+                  if (Spawn[i].update() == -1){
+                    InputStream is;
+                    try {
+                      is = Files.newInputStream(Paths.get("res/images/game_over.jpg"));
+                      Image img = new Image(is);
+                      ImageView imgView = new ImageView(img);
+                      getChildren().add(imgView);
+                      this.stop();
+                      is.close();
+                    } catch (IOException e) {
+                      // TODO Auto-generated catch block
+                      e.printStackTrace();
+                    }
+                  };
                 }
                 FrameTimer.set(now / updateFrequence);
               } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
               }
-          }
         }
         /*if (GameMode == "Auto"){
           EveryTickForBot++;
@@ -105,7 +134,20 @@ public class GameRoot extends Pane {
         //Обновление местоположения монстров с интервалом 0.01 сек
         if (now / updateFrequence != FrameTimer.get()){
           for (int i = 0; i < rows; i++){
-            Spawn[i].update();
+            if (Spawn[i].update() == -1){
+              InputStream is;
+              try {
+                is = Files.newInputStream(Paths.get("res/images/game_over.jpg"));
+                Image img = new Image(is);
+                ImageView imgView = new ImageView(img);
+                getChildren().add(imgView);
+                this.stop();
+                is.close();
+              } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
+            };
           }
         }
         FrameTimer.set(now / updateFrequence);

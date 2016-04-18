@@ -206,11 +206,14 @@ public class MainGameMenu extends Application {
         });
     });
       
+      int damageHorror = 25;
+      int damageNightmare = 20;
+      
       MenuButton btnHorror = new MenuButton("Horror");
       btnHorror.setOnMouseClicked(event -> {
         try {
           /** stop playing and change scene */
-          Shot.damage = 25;
+          Shot.damage = damageHorror;
           menuMp.stop();
           gameWindow.show(theStage);
         } catch (Exception e) {
@@ -221,7 +224,7 @@ public class MainGameMenu extends Application {
       MenuButton btnNightmare = new MenuButton("Nightmare");
       btnNightmare.setOnMouseClicked(event -> {
         try {
-          Shot.damage = 20;
+          Shot.damage = damageNightmare;
           /** stop playing and change scene */
           menuMp.stop();
           gameWindow.show(theStage);
@@ -229,6 +232,25 @@ public class MainGameMenu extends Application {
           e.printStackTrace();
         }
     });
+      
+      /** back to change bot/player playing */
+      MenuButton btnBack1 = new MenuButton("Back");
+      btnBack1.setOnMouseClicked(event -> {
+          getChildren().add(menu1);
+
+          TranslateTransition tt = new TranslateTransition(Duration.seconds(TransTtDur), menu2);
+          tt.setToX(menu2.getTranslateX() + offset);
+
+          TranslateTransition tt1 = new TranslateTransition(Duration.seconds(TransTt1Dur), menu1);
+          tt1.setToX(menu2.getTranslateX());
+
+          tt.play();
+          tt1.play();
+
+          tt.setOnFinished(evt -> {
+              getChildren().remove(menu2);
+          });
+      });
 
       MenuButton btnExit = new MenuButton("Exit");
       btnExit.setOnMouseClicked(event -> {
@@ -239,7 +261,7 @@ public class MainGameMenu extends Application {
       getChildren().add(menu0);
       
       menu1.getChildren().addAll(btnBot, btnPlayer, btnBack);
-      menu2.getChildren().addAll(btnHorror, btnNightmare);
+      menu2.getChildren().addAll(btnHorror, btnNightmare, btnBack1);
     }
   }
 

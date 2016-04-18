@@ -75,16 +75,6 @@ public class Enemy extends Pane{
     }
   }
 
-  /** 
-   *  ћетод, убирающий цель с карты, если она дошла до конца
-   */
-  public void EnemyGoalRiched(){
-    Health = 0;
-    this.setVisible(false);
-    GameWindow.gameRoot.getChildren().remove(this);
-    this.animation.stop();
-  }
-
   /**
    * ћетод отвечает за получение урона от вышек
    * @param Damage -  ол-во полученного урона

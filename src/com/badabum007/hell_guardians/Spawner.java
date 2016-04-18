@@ -45,7 +45,7 @@ public class Spawner{
   }
 
   /** ћетод, обновл€ющий местоположение монстров */
-  public void update(){
+  public int update(){
     for (int j=0; j<enemies.size(); j++){
       X = (int)(enemies.get(j).posX);
       if (X > GameWindow.offsetXY)
@@ -54,8 +54,9 @@ public class Spawner{
         continue;
       }
       else{
-        enemies.get(j).EnemyGoalRiched();
+        return -1;
       }
     }
+    return 0;
   }
 }
