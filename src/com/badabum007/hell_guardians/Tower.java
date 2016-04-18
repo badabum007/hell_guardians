@@ -22,7 +22,7 @@ public class Tower extends Pane {
   double posX;
   double posY;
   double attackRange = MainGameMenu.width - GameWindow.offsetXY;
-  Shot shots;
+  public Shot shots;
   
   /** Cooldown на выстрел вышки */
   final double ShootCooldown = 10;

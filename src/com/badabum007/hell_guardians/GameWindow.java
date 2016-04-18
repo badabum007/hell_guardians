@@ -1,6 +1,5 @@
 package com.badabum007.hell_guardians;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -25,12 +24,12 @@ public class GameWindow {
   private   TowerMenu towerMenu;
   private   Scores_n_money scores_n_money;
 
-  static GameRoot gameRoot;
+  static GameRoot gameRoot = new GameRoot();
+  
   private  Scene gameScene;
   static Pane All;
 
   public  void show(Stage primaryStage) throws IOException{
-    gameRoot = new GameRoot();
     Pane All = new Pane();
     gameScene = new Scene(All);
 
@@ -51,7 +50,7 @@ public class GameWindow {
     scores_n_money = new Scores_n_money();
     scores_n_money.setVisible(true);
 
-    GameRoot.GameMode = "Normal";
+    gameRoot.GameMode = "Normal";
     gameRoot.setVisible(true);
     gameRoot.StartGame();
 

@@ -21,7 +21,7 @@ public class GameRoot extends Pane {
   ArrayList<Tower> Towers;
 
   /** Режим игры: автоматический(Auto) или обычный(Normal) */
-  static String GameMode;
+  public static String GameMode;
 
   //music player object
   private MediaPlayer menuMp;
@@ -41,8 +41,8 @@ public class GameRoot extends Pane {
     getChildren().add(mediaView);
   }
 
-  final int rows = 4;
-  final int columns = 6;
+  public static final int rows = 4;
+  public static final int columns = 6;
   final double timeToNextMob = 100;
 
   final int updateFrequence = 10000000;

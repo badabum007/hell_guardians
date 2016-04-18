@@ -50,7 +50,7 @@ public class Block extends Pane{
       GameWindow.gameRoot.getChildren().removeAll(line1, line2, line3, line4);
     });
     /** Build a tower on mouse click */
-    if (GameRoot.GameMode == "Normal"){
+    if (GameWindow.gameRoot.GameMode == "Normal"){
       this.setOnMouseClicked(event->{
         Tower tower;
         try {

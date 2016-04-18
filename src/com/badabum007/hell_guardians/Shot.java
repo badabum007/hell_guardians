@@ -17,6 +17,8 @@ public class Shot extends Circle {
     /** Цель выстрела */
     Enemy Target;
     
+    public static int damage;
+    
     /** Стартовые координаты выстрела */
     double startX;
     double startY;
@@ -57,7 +59,7 @@ public class Shot extends Circle {
                  Shot finishedShot = (Shot) finishedAnimation.getNode();
                  // Удаление выстрела из Root-а и получение целью урона
                  finishedShot.setVisible(false);
-                 Target.GetDamage(20);
+                 Target.GetDamage(damage);
                  GameWindow.gameRoot.getChildren().remove(finishedShot);
              }
         });
