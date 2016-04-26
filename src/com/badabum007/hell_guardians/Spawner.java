@@ -4,32 +4,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Класс, описывающий место появления монстров
- * @author pixxx
+ * Class defines enemy spawner
+ * 
+ * @author badabum007
  */
-public class Spawner{
-  /** Кол-во выходящих монстров(в сумме) */
+public class Spawner {
+  /** summary spawned creatures number*/
   int count;
 
   int startPosX;
   int startPosY;
 
-  /** Кол-во уже выпущенных монстров*/
+  /** unleashed monsters count*/
   int iterator;
 
-  /** Список всех созданных этим Spawner-ом монстров */
+  /** list of all existing enemies from this spawner*/
   ArrayList<Enemy> enemies;
 
   int X;
-  int offset = 1;
+  /** enemy step size*/
+  int enemyStepSize = 1;
 
   /**
-   * Создает Spawner с заданными параметрами
-   * @param count - Кол-во выходящих монстров
-   * @param startPosX - Стартовая точка по X
-   * @param startPosY - Стартовая точка по Y
+   * create a spawner
+   * 
+   * @param count - spawning enemies count
+   * @param startPosX - start X coordinate
+   * @param startPosY - start Y coordinate
    */
-  public Spawner(int count, int startPosX, int startPosY){
+  public Spawner(int count, int startPosX, int startPosY) {
     this.startPosX = startPosX;
     this.startPosY = startPosY;
     this.count = count;
@@ -37,23 +40,24 @@ public class Spawner{
     enemies = new ArrayList<Enemy>();
   }
 
-  /** Создание монстра 
-   * @throws IOException */
-  public void CreateMonster() throws IOException{
+  /**
+   * enemy creation
+   * 
+   * @throws IOException
+   */
+  public void CreateMonster() throws IOException {
     enemies.add(new Enemy(startPosX, startPosY));
     iterator++;
   }
 
-  /** Метод, обновляющий местоположение монстров */
-  public int update(){
-    for (int j=0; j<enemies.size(); j++){
-      X = (int)(enemies.get(j).posX);
-      if (X > GameWindow.offsetXY)
-      {
-        enemies.get(j).moveX(offset);
+  /** updates enemy location */
+  public int update() {
+    for (int j = 0; j < enemies.size(); j++) {
+      X = (int) (enemies.get(j).posX);
+      if (X > GameWindow.offsetXY) {
+        enemies.get(j).moveX(enemyStepSize);
         continue;
-      }
-      else{
+      } else {
         return -1;
       }
     }

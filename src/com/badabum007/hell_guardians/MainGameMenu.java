@@ -183,7 +183,7 @@ public class MainGameMenu extends Application {
       MenuButton btnBot = new MenuButton("Bot game");
       btnBot.setOnMouseClicked(event -> {
         /** enable bot playing */
-        GameRoot.GameMode = "Auto";
+        GameRoot.gameMode = "Auto";
 
         getChildren().add(menu2);
         TranslateTransition translateTransition =
@@ -203,7 +203,7 @@ public class MainGameMenu extends Application {
 
       MenuButton btnPlayer = new MenuButton("Player game");
       btnPlayer.setOnMouseClicked(event -> {
-        GameRoot.GameMode = "Normal";
+        GameRoot.gameMode = "Normal";
 
         getChildren().add(menu2);
         TranslateTransition translateTransition =

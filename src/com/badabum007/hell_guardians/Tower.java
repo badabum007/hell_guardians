@@ -12,44 +12,43 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 /**
- * Класс, описывающий вышку
- * @author pixxx
+ * Class defines single tower
+ * 
+ * @author badabum007
  */
 public class Tower extends Pane {
   ImageView imageView;
 
-  /** Позиция вышки, радиус атаки, ее размеры и производимый выстрел */
+  /** tower position */
   double posX;
   double posY;
   double attackRange = MainGameMenu.width - GameWindow.offsetXY;
   public Shot shots;
-  
-  /** Cooldown на выстрел вышки */
-  final double ShootCooldown = 10;
-  
-  /** Сколько времени осталось до выстрела */
-  double TimeToShoot;
+  final double shootingCooldown = 10;
+
+  /** time to next shot */
+  double timeToShoot;
 
   SpriteAnimation animation;
 
-  final int COLUMNS  =  8;
-  final int COUNT    =  8;
-  final int OFFSET_X =  0;
-  final int OFFSET_Y =  535;
-  final int WIDTH    = 110;
-  final int HEIGHT   = 125;
-  final int DURATION = 1000;
+  final int columns = 8;
+  final int count = 8;
+  final int offsetX = 0;
+  final int offsetY = 535;
+  final int width = 110;
+  final int height = 125;
+  final int duration = 1000;
 
   /**
-   * Метод, создающий объект вышки с заданными параметрами
-   * @param posX - Местоположение по X
-   * @param posY - Местоположение по Y
-   * @param attackRange - Радиус атаки
-   * @throws IOException 
+   * Build a tower
+   * 
+   * @param posX - tower X position
+   * @param posY - tower Y position
+   * @throws IOException
    */
-  public Tower(double x, double y) throws IOException{
-    TimeToShoot = 0;
-    
+  public Tower(double x, double y) throws IOException {
+    timeToShoot = 0;
+
     InputStream is = Files.newInputStream(Paths.get("res/images/sarcher_sprites.png"));
     Image img = new Image(is);
     is.close();
@@ -59,14 +58,9 @@ public class Tower extends Pane {
     this.posY = y;
     this.setTranslateX(posX);
     this.setTranslateY(posY);
-    imageView.setViewport(new Rectangle2D(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT));
-    Animation animation = new SpriteAnimation(
-        imageView,
-        Duration.millis(DURATION),
-        COUNT, COLUMNS,
-        OFFSET_X, OFFSET_Y,
-        WIDTH, HEIGHT
-        );
+    imageView.setViewport(new Rectangle2D(offsetX, offsetY, width, height));
+    Animation animation = new SpriteAnimation(imageView, Duration.millis(duration), count, columns,
+        offsetX, offsetY, width, height);
     animation.setCycleCount(Animation.INDEFINITE);
     animation.play();
     getChildren().add(imageView);

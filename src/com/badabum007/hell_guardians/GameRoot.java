@@ -19,54 +19,60 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 
 /**
- * Класс, описывающий движок игры
+ * game engine class
  * 
- * @author pixxx
+ * @author badabum007
  */
 public class GameRoot extends Pane {
 
-  /** Вышки, добавленные на карту */
-  ArrayList<Tower> Towers;
+  /** existing towers */
+  ArrayList<Tower> towers;
 
-  /** Режим игры: автоматический(Auto) или обычный(Normal) */
-  public static String GameMode;
+  /** game mode: Auto(botplay) or Normal */
+  public static String gameMode;
 
-  /** Бот для автоматического режима */
+  /** bot for Auto mode */
   Bot bot;
 
-  // music player object
   private MediaPlayer menuMp;
-
-  public GameRoot() {
-    Towers = new ArrayList<Tower>();
-    this.setVisible(false);
-    bot = new Bot();
-  }
 
   public static final int rows = 4;
   public static final int columns = 6;
 
-  final int updateFrequence = 10000000;
+  /** timer update frequency */
+  final int updateFrequency = 10000000;
 
-  /** Имеющиеся на карте Спаунеры */
-  Spawner[] Spawn = new Spawner[rows];
-
-  /**
-   * Метод, реализующий логику игры
-   */
+  /** existing enemy spawners */
+  Spawner[] Spawn;
 
   int enemyCount = 2;
-  long TimeToNextWave = 500;
+  long timeToNextWave = 500;
   final long timeToNextMob = 100;
 
+  LongProperty checkForShootTimer;
+  LongProperty frameTimer;
+
+  long frameTimerInit = 0;
+
+  public GameRoot() {
+    towers = new ArrayList<Tower>();
+    Spawn = new Spawner[rows];
+    this.setVisible(false);
+    if (gameMode == "Auto") {
+      bot = new Bot();
+    }
+  }
+
+  /**
+   * game logic implementation
+   */
   public void StartGame() throws IOException {
-    // adding music
     Media media = new Media(
         new File("res/music/Gonzalo_Varela_-_03_-_Underwater_Lab.mp3").toURI().toString());
     menuMp = new MediaPlayer(media);
-    // autostart when program is launched
+    /** song autostart after adding */
     menuMp.setAutoPlay(true);
-    // infinite song playing
+    /** play song in infinity loop */
     menuMp.setCycleCount(MediaPlayer.INDEFINITE);
     menuMp.play();
     MediaView mediaView = new MediaView(menuMp);
@@ -76,38 +82,42 @@ public class GameRoot extends Pane {
       Spawn[i] = new Spawner(enemyCount, MainGameMenu.width,
           GameWindow.offsetXY + i * GameWindow.blockSize);
     }
-    /** Описание таймера */
-    final LongProperty CheckForShootTimer = new SimpleLongProperty();
-    final LongProperty FrameTimer = new SimpleLongProperty(0);
+    /** timer description */
+    checkForShootTimer = new SimpleLongProperty();
+    frameTimer = new SimpleLongProperty(frameTimerInit);
     AnimationTimer timer = new AnimationTimer() {
-      long EveryTick = 0;
-      long WaveTick = 0;
-      long EveryTickForBot = 0;
+      /** timer counters */
+      long everyTick = 0;
+      long waveTick = 0;
+      long everyTickForBot = 0;
 
       @Override
       public void handle(long now) {
-        EveryTick++;
-        WaveTick++;
-        // 55 тиков ~= 1 сек
-        if (EveryTick > timeToNextMob) {
-          EveryTick = 0;
-          if (WaveTick > (int) (new Random().nextInt((int) TimeToNextWave))) {
-            TimeToNextWave += timeToNextMob;
+        everyTick++;
+        waveTick++;
+        if (everyTick > timeToNextMob) {
+          everyTick = 0;
+          /** generate new wave */
+          if (waveTick > (int) (new Random().nextInt((int) timeToNextWave))) {
+            timeToNextWave += timeToNextMob;
             enemyCount += 1;
             for (int i = 0; i < rows; i++) {
               if ((int) (new Random().nextInt(3)) == 0) {
                 Spawn[i].count += (int) (new Random().nextInt((int) enemyCount));
               }
             }
-            WaveTick = 0;
+            waveTick = 0;
           }
-          for (int i = 0; i < rows; i++)
-            if (Spawn[i].iterator < Spawn[i].count)
+
+          for (int i = 0; i < rows; i++) {
+            /** generate new mob */
+            if (Spawn[i].iterator < Spawn[i].count) {
               try {
                 if ((int) (new Random().nextInt(3)) == 0) {
-                Spawn[i].CreateMonster();
+                  Spawn[i].CreateMonster();
                 }
-                if (now / updateFrequence != FrameTimer.get()) {
+                /** update enemies position */
+                if (now / updateFrequency != frameTimer.get()) {
                   if (Spawn[i].update() == -1) {
                     InputStream is;
                     try {
@@ -123,17 +133,20 @@ public class GameRoot extends Pane {
                     }
                   } ;
                 }
-                FrameTimer.set(now / updateFrequence);
+                frameTimer.set(now / updateFrequency);
               } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
               }
+            }
+          }
         }
-        if (GameMode == "Auto") {
-          EveryTickForBot++;
-          // 165 тиков ~= 3 сек
-          if (EveryTickForBot > (int)(Math.random()*70+50)) {
-            EveryTickForBot = 0;
+
+        /** bot builds tower */
+        if (gameMode == "Auto") {
+          everyTickForBot++;
+          if (everyTickForBot > (int) (Math.random() * 70 + 50)) {
+            everyTickForBot = 0;
             if (bot.currentCount < bot.maxCount) {
               try {
                 bot.createTower();
@@ -144,16 +157,17 @@ public class GameRoot extends Pane {
             }
           }
         }
-        // Проверка на выстрелы вышек с интервалом 0.1
-        if (now / updateFrequence != CheckForShootTimer.get()) {
+
+        /** check if the tower is ready for shot */
+        if (now / updateFrequency != checkForShootTimer.get()) {
           CheckForShooting();
-          // Уменьшение Cooldown-а каждой вышки
-          for (int i = 0; i < Towers.size(); i++) {
-            Towers.get(i).TimeToShoot -= 0.1;
+          /** reduce cooldown */
+          for (int i = 0; i < towers.size(); i++) {
+            towers.get(i).timeToShoot -= 0.1;
           }
         }
-        // Обновление местоположения монстров с интервалом 0.01 сек
-        if (now / updateFrequence != FrameTimer.get()) {
+        /** update enemy position */
+        if (now / updateFrequency != frameTimer.get()) {
           for (int i = 0; i < rows; i++) {
             if (Spawn[i].update() == -1) {
               InputStream is;
@@ -171,15 +185,15 @@ public class GameRoot extends Pane {
             } ;
           }
         }
-        FrameTimer.set(now / updateFrequence);
-        CheckForShootTimer.set(now / updateFrequence);
+        frameTimer.set(now / updateFrequency);
+        checkForShootTimer.set(now / updateFrequency);
       }
     };
     timer.start();
   }
 
   /**
-   * Метод прорисовывает карту
+   * map generation
    * 
    * @throws IOException
    */
@@ -193,7 +207,7 @@ public class GameRoot extends Pane {
     }
   }
 
-  /** Метод, реализующий поиск целей и генерации выстрела */
+  /** find target and generate a shot */
   public void CheckForShooting() {
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < Spawn[i].enemies.size(); j++) {
@@ -201,19 +215,18 @@ public class GameRoot extends Pane {
           Spawn[i].enemies.remove(j);
           continue;
         }
-        for (int k = 0; k < Towers.size(); k++) {
+        for (int k = 0; k < towers.size(); k++) {
           double EnemyPosX = Spawn[i].enemies.get(j).getTranslateX();
           double EnemyPosY = Spawn[i].enemies.get(j).getTranslateY();
-          double TowerPosX = Towers.get(k).getTranslateX();
-          double TowerPosY = Towers.get(k).getTranslateY();
+          double TowerPosX = towers.get(k).getTranslateX();
+          double TowerPosY = towers.get(k).getTranslateY();
+          /** enemy is in a towers line in front of the tower */
           if ((EnemyPosX - TowerPosX > 0) && (TowerPosY - EnemyPosY == 0)
               && (EnemyPosX < MainGameMenu.width - GameWindow.offsetXY))
-            // Условие проверки на Cooldown
-            if (Towers.get(k).TimeToShoot <= 0) {
-            // Установка Cooldown
-            Towers.get(k).TimeToShoot = Towers.get(k).ShootCooldown;
-            // Создание выстрела
-            Towers.get(k).shots = new Shot(Spawn[i].enemies.get(j), Towers.get(k).posX + GameWindow.blockSize / 2, Towers.get(k).posY + GameWindow.blockSize / 2);
+            /** cooldown checking */
+            if (towers.get(k).timeToShoot <= 0) {
+            towers.get(k).timeToShoot = towers.get(k).shootingCooldown;
+            towers.get(k).shots = new Shot(Spawn[i].enemies.get(j), towers.get(k).posX + GameWindow.blockSize / 2, towers.get(k).posY + GameWindow.blockSize / 2);
             }
         }
       }

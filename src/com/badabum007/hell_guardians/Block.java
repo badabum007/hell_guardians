@@ -52,12 +52,12 @@ public class Block extends Pane {
       GameWindow.gameRoot.getChildren().removeAll(line1, line2, line3, line4);
     });
     /** Build a tower on mouse click */
-    if (GameRoot.GameMode == "Normal") {
+    if (GameRoot.gameMode == "Normal") {
       this.setOnMouseClicked(event -> {
         Tower tower;
         try {
           tower = new Tower(x, y);
-          GameWindow.gameRoot.Towers.add(tower);
+          GameWindow.gameRoot.towers.add(tower);
         } catch (Exception e) {
           e.printStackTrace();
         }

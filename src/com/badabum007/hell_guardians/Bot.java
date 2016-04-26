@@ -48,7 +48,7 @@ public class Bot {
     towerMap[coordY][coordX] = true;
     Tower tower = new Tower(coordX * GameWindow.blockSize + GameWindow.offsetXY,
         coordY * GameWindow.blockSize + GameWindow.offsetXY);
-    GameWindow.gameRoot.Towers.add(tower);
+    GameWindow.gameRoot.towers.add(tower);
     currentCount++;
   }
 }
