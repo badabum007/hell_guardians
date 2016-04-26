@@ -4,49 +4,51 @@ import java.io.IOException;
 import java.util.Random;
 
 /**
- * Класс,  реализующий бота
- * @author pixxx
+ * Bot implementation
+ * 
+ * @author badabum007
  */
 public class Bot {
-  /** Координаты вышек */
+  /** tower coordinates */
   int coordX;
   int coordY;
 
-  /** Количество возможных вышек */
-  int Count = GameRoot.rows * GameRoot.columns;
+  /** max tower maxCount */
+  int maxCount = GameRoot.rows * GameRoot.columns;
+  /** current towers count */
+  int currentCount;
 
-  /** Количество уже построенных вышек */
-  int iterator;
-  
-  boolean[][] matrix;
+  /** tower map */
+  boolean[][] towerMap;
 
-  /** Метод, создающий бота */
-  public Bot(){
-    iterator = 0;
+  /** bot initialization */
+  public Bot() {
+    currentCount = 0;
     coordX = 0;
     coordY = 0;
-    matrix = new boolean[GameRoot.rows][GameRoot.columns];
-    for (int i = 0; i < GameRoot.rows; i++){
-      for (int j = 0; j < GameRoot.columns; j++){
-        matrix[i][j] = false;
+    towerMap = new boolean[GameRoot.rows][GameRoot.columns];
+    for (int i = 0; i < GameRoot.rows; i++) {
+      for (int j = 0; j < GameRoot.columns; j++) {
+        towerMap[i][j] = false;
       }
     }
-  }       
+  }
 
   /**
-   * Метод создания вышки
-   * @throws IOException 
+   * Tower creation
+   * 
+   * @throws IOException
    */
-  void createTower() throws IOException{
+  void createTower() throws IOException {
+    /** check if the block is free*/
     do {
-      coordY = (int)(new Random().nextInt(GameRoot.rows));
-      coordX = (int)(new Random().nextInt(GameRoot.columns));
-    }
-      while (matrix[coordY][coordX] == true);
-    matrix[coordY][coordX] = true;
-    Tower tower = new Tower(coordX * GameWindow.BLOCK_SIZE + GameWindow.offsetXY, 
-        coordY * GameWindow.BLOCK_SIZE + GameWindow.offsetXY);
+      coordY = (int) (new Random().nextInt(GameRoot.rows));
+      coordX = (int) (new Random().nextInt(GameRoot.columns));
+    } while (towerMap[coordY][coordX] == true);
+    towerMap[coordY][coordX] = true;
+    Tower tower = new Tower(coordX * GameWindow.blockSize + GameWindow.offsetXY,
+        coordY * GameWindow.blockSize + GameWindow.offsetXY);
     GameWindow.gameRoot.Towers.add(tower);
-    iterator++;
+    currentCount++;
   }
 }

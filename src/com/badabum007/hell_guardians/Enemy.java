@@ -12,17 +12,18 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 /**
- * Класс  описывает монстра и его движение и отвечает за его отображение
- * @author pixxx
+ * Class defines a single enemy
+ * 
+ * @author badabum007
  */
-public class Enemy extends Pane{
+public class Enemy extends Pane {
   ImageView imageView;
 
-
-  /** Положение монстра */
+  /** enemy position */
   public double posX;
-  public double posY; 
-  int Health = 100;
+  public double posY;
+  int health = 100;
+  final int zeroHealth = 0;
 
   final int width = 145;
   final int height = 100;
@@ -32,20 +33,23 @@ public class Enemy extends Pane{
   final int columns = 6;
   final int duration = 700;
   SpriteAnimation animation;
+
   /**
-   * Создает монстра с заданными параметрами
-   * @param posX - Начальная позиция по X
-   * @param posY - Начальная позиция по Y
-   * @throws IOException 
+   * Creates an enemy at the pointed location
+   * 
+   * @param posX - start X position
+   * @param posY - start Y position
+   * @throws IOException
    */
-  public Enemy(int posX, int posY) throws IOException{
+  public Enemy(int posX, int posY) throws IOException {
+    /** load enemy sprite and enable enemy animation */
     InputStream is = Files.newInputStream(Paths.get("res/images/hero_sprites.png"));
     Image img = new Image(is);
     is.close();
     this.imageView = new ImageView(img);
     this.imageView.setViewport(new Rectangle2D(offsetX, offsetY, width, height));
-    animation = new SpriteAnimation
-        (imageView, Duration.millis(duration), count, columns, offsetX, offsetY, width, height);
+    animation = new SpriteAnimation(imageView, Duration.millis(duration), count, columns, offsetX,
+        offsetY, width, height);
     animation.setCycleCount(Animation.INDEFINITE);
     animation.play();
     this.posX = posX;
@@ -57,31 +61,23 @@ public class Enemy extends Pane{
   }
 
   /**
-   * Метод, отвечающий за передвижение монстра по X
-   * @param x - На сколько сдвигать монстра
+   * Enemy movement control
+   * 
+   * @param x - number of steps to move (if x < 0 enemy moves from right to left)
    */
-  public void moveX(double x){
-    boolean right = true;
-    if (x<0) right = false;
-    for (int i = 0; i<Math.abs(x); i++){
-      if (right){
-        this.setTranslateX(this.getTranslateX() + 1);
-        posX += 1;
-      }
-      else {
-        this.setTranslateX(this.getTranslateX() - 1);
-        posX -= 1;
-      }
-    }
+  public void moveX(double x) {
+    this.setTranslateX(this.getTranslateX() - x);
+    posX -= x;
   }
 
   /**
-   * Метод отвечает за получение урона от вышек
-   * @param Damage - Кол-во полученного урона
+   * method responds for losing health after getting a damage
+   * 
+   * @param damage - amount of damage, got from tower
    */
-  public void GetDamage(int Damage){
-    Health = Health - Damage;
-    if (Health <= 0){
+  public void getDamage(int damage) {
+    health = health - damage;
+    if (health <= zeroHealth) {
       this.setVisible(false);
       GameWindow.gameRoot.getChildren().remove(this);
       this.animation.stop();

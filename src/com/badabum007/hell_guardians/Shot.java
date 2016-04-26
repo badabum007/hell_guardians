@@ -59,7 +59,7 @@ public class Shot extends Circle {
                  Shot finishedShot = (Shot) finishedAnimation.getNode();
                  // Удаление выстрела из Root-а и получение целью урона
                  finishedShot.setVisible(false);
-                 Target.GetDamage(damage);
+                 Target.getDamage(damage);
                  GameWindow.gameRoot.getChildren().remove(finishedShot);
              }
         });

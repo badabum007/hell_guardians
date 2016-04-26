@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Random;
+
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -72,7 +74,7 @@ public class GameRoot extends Pane {
     CreateMap();
     for (int i = 0; i < rows; i++) {
       Spawn[i] = new Spawner(enemyCount, MainGameMenu.width,
-          GameWindow.offsetXY + i * GameWindow.BLOCK_SIZE);
+          GameWindow.offsetXY + i * GameWindow.blockSize);
     }
     /** Описание таймера */
     final LongProperty CheckForShootTimer = new SimpleLongProperty();
@@ -89,18 +91,22 @@ public class GameRoot extends Pane {
         // 55 тиков ~= 1 сек
         if (EveryTick > timeToNextMob) {
           EveryTick = 0;
-          if (WaveTick > TimeToNextWave) {
+          if (WaveTick > (int) (new Random().nextInt((int) TimeToNextWave))) {
             TimeToNextWave += timeToNextMob;
             enemyCount += 1;
             for (int i = 0; i < rows; i++) {
-              Spawn[i].count += enemyCount;
-              WaveTick = 0;
+              if ((int) (new Random().nextInt(3)) == 0) {
+                Spawn[i].count += (int) (new Random().nextInt((int) enemyCount));
+              }
             }
+            WaveTick = 0;
           }
           for (int i = 0; i < rows; i++)
             if (Spawn[i].iterator < Spawn[i].count)
               try {
+                if ((int) (new Random().nextInt(3)) == 0) {
                 Spawn[i].CreateMonster();
+                }
                 if (now / updateFrequence != FrameTimer.get()) {
                   if (Spawn[i].update() == -1) {
                     InputStream is;
@@ -126,9 +132,9 @@ public class GameRoot extends Pane {
         if (GameMode == "Auto") {
           EveryTickForBot++;
           // 165 тиков ~= 3 сек
-          if (EveryTickForBot > 50) {
+          if (EveryTickForBot > (int)(Math.random()*70+50)) {
             EveryTickForBot = 0;
-            if (bot.iterator < bot.Count) {
+            if (bot.currentCount < bot.maxCount) {
               try {
                 bot.createTower();
               } catch (IOException e) {
@@ -181,8 +187,8 @@ public class GameRoot extends Pane {
   public void CreateMap() throws IOException {
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < columns; j++) {
-        Block bl = new Block(GameWindow.offsetXY + j * GameWindow.BLOCK_SIZE,
-            GameWindow.offsetXY + i * GameWindow.BLOCK_SIZE);
+        Block bl = new Block(GameWindow.offsetXY + j * GameWindow.blockSize,
+            GameWindow.offsetXY + i * GameWindow.blockSize);
       }
     }
   }
@@ -191,7 +197,7 @@ public class GameRoot extends Pane {
   public void CheckForShooting() {
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < Spawn[i].enemies.size(); j++) {
-        if (Spawn[i].enemies.get(j).Health <= 0) {
+        if (Spawn[i].enemies.get(j).health <= 0) {
           Spawn[i].enemies.remove(j);
           continue;
         }
@@ -207,8 +213,7 @@ public class GameRoot extends Pane {
             // Установка Cooldown
             Towers.get(k).TimeToShoot = Towers.get(k).ShootCooldown;
             // Создание выстрела
-            Towers.get(k).shots = new Shot(Spawn[i].enemies.get(j), Towers.get(k).
-                posX + GameWindow.BLOCK_SIZE / 2, Towers.get(k).posY + GameWindow.BLOCK_SIZE / 2);
+            Towers.get(k).shots = new Shot(Spawn[i].enemies.get(j), Towers.get(k).posX + GameWindow.blockSize / 2, Towers.get(k).posY + GameWindow.blockSize / 2);
             }
         }
       }

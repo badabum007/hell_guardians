@@ -32,6 +32,7 @@ import javafx.util.Duration;
 
 /**
  * This class is representing title screen menu
+ * 
  * @author badabum007
  */
 public class MainGameMenu extends Application {
@@ -60,8 +61,8 @@ public class MainGameMenu extends Application {
     /** menu content adding */
 
     /** adding music */
-    Media media= new Media(new File("res/music/Gonzalo_Varela_-_06_-_Abandoned_Souls.mp3")
-        .toURI().toString());
+    Media media = new Media(
+        new File("res/music/Gonzalo_Varela_-_06_-_Abandoned_Souls.mp3").toURI().toString());
     menuMp = new MediaPlayer(media);
     /** autostart when program is launched */
     menuMp.setAutoPlay(true);
@@ -81,9 +82,9 @@ public class MainGameMenu extends Application {
     imgView.setFitHeight(height);
 
     /** disable window resize */
-    theStage.setMinWidth(width);        
+    theStage.setMinWidth(width);
     theStage.setMinHeight(height);
-    theStage.setMaxWidth(width);        
+    theStage.setMaxWidth(width);
     theStage.setMaxHeight(height);
 
     /** initializing our menu */
@@ -103,112 +104,126 @@ public class MainGameMenu extends Application {
 
   /**
    * Title menu buttons container
+   * 
    * @author badabum007
    */
   private class GameMenu extends Parent {
 
+    VBox menu0;
+    VBox menu1;
+    VBox menu2;
+
+    final int distBetweenButtons = 10;
+    /** setting menu position */
+    final int menuTransX = 550, menuTransY = 450;
+    /** offset for shuffling when menu is changed */
+    final int offset = 800;
+    double TransTtDur = 0.25;
+    double TransTt1Dur = 0.5;
+
     /**
      * Adds all necessary buttons and sets their behavior
+     * 
      * @throws FileNotFoundException
-     */ 
-    public GameMenu() throws  FileNotFoundException{
-      int distBetweenButtons = 10;
-      VBox menu0 = new VBox(distBetweenButtons);
-      VBox menu1 = new VBox(distBetweenButtons);
-      VBox menu2 = new VBox(distBetweenButtons);
+     */
+    public GameMenu() throws FileNotFoundException {
+      menu0 = new VBox(distBetweenButtons);
+      menu1 = new VBox(distBetweenButtons);
+      menu2 = new VBox(distBetweenButtons);
 
-      /** setting menu position */
-      int menuTransX = 550, menuTransY = 450;
-      /** offset for shuffling when menu is changed */
-      final int offset = 800;
       menu0.setTranslateX(menuTransX);
       menu0.setTranslateY(menuTransY);
-      
+
       menu1.setTranslateX(menuTransX);
       menu1.setTranslateY(menuTransY);
-      
+
       menu2.setTranslateX(menuTransX);
       menu2.setTranslateY(menuTransY);
-      
-      double TransTtDur = 0.25;
-      double TransTt1Dur = 0.5;
 
       MenuButton btnNewGame = new MenuButton("New game");
 
       btnNewGame.setOnMouseClicked(event -> {
         getChildren().add(menu1);
 
-        TranslateTransition tt = new TranslateTransition(Duration.seconds(TransTtDur), menu0);
-        tt.setToX(menu0.getTranslateX() - offset);
-        TranslateTransition tt1 = new TranslateTransition(Duration.seconds(TransTt1Dur), menu1);
-        tt1.setToX(menu0.getTranslateX());
+        TranslateTransition translateTransition =
+            new TranslateTransition(Duration.seconds(TransTtDur), menu0);
+        translateTransition.setToX(menu0.getTranslateX() - offset);
+        TranslateTransition translateTransition1 =
+            new TranslateTransition(Duration.seconds(TransTt1Dur), menu1);
+        translateTransition1.setToX(menu0.getTranslateX());
 
-        tt.play();
-        tt1.play();
+        translateTransition.play();
+        translateTransition1.play();
 
-        tt.setOnFinished(evt -> {
+        translateTransition.setOnFinished(evt -> {
           getChildren().remove(menu0);
         });
       });
-      
+
       MenuButton btnBack = new MenuButton("Back");
       btnBack.setOnMouseClicked(event -> {
-          getChildren().add(menu0);
+        getChildren().add(menu0);
 
-          TranslateTransition tt = new TranslateTransition(Duration.seconds(TransTtDur), menu1);
-          tt.setToX(menu1.getTranslateX() + offset);
+        TranslateTransition translateTransition =
+            new TranslateTransition(Duration.seconds(TransTtDur), menu1);
+        translateTransition.setToX(menu1.getTranslateX() + offset);
 
-          TranslateTransition tt1 = new TranslateTransition(Duration.seconds(TransTt1Dur), menu0);
-          tt1.setToX(menu1.getTranslateX());
+        TranslateTransition translateTransition1 =
+            new TranslateTransition(Duration.seconds(TransTt1Dur), menu0);
+        translateTransition1.setToX(menu1.getTranslateX());
 
-          tt.play();
-          tt1.play();
+        translateTransition.play();
+        translateTransition1.play();
 
-          tt.setOnFinished(evt -> {
-              getChildren().remove(menu1);
-          });
+        translateTransition.setOnFinished(evt -> {
+          getChildren().remove(menu1);
+        });
       });
-      
+
       MenuButton btnBot = new MenuButton("Bot game");
       btnBot.setOnMouseClicked(event -> {
-        getChildren().add(menu2);
-
         /** enable bot playing */
         GameRoot.GameMode = "Auto";
-        TranslateTransition tt = new TranslateTransition(Duration.seconds(TransTtDur), menu1);
-        tt.setToX(menu1.getTranslateX() - offset);
-        TranslateTransition tt1 = new TranslateTransition(Duration.seconds(TransTt1Dur), menu2);
-        tt1.setToX(menu1.getTranslateX());
 
-        tt.play();
-        tt1.play();
+        getChildren().add(menu2);
+        TranslateTransition translateTransition =
+            new TranslateTransition(Duration.seconds(TransTtDur), menu1);
+        translateTransition.setToX(menu1.getTranslateX() - offset);
+        TranslateTransition translateTransition1 =
+            new TranslateTransition(Duration.seconds(TransTt1Dur), menu2);
+        translateTransition1.setToX(menu1.getTranslateX());
 
-        tt.setOnFinished(evt -> {
+        translateTransition.play();
+        translateTransition1.play();
+
+        translateTransition.setOnFinished(evt -> {
           getChildren().remove(menu1);
         });
-    });
-      
+      });
+
       MenuButton btnPlayer = new MenuButton("Player game");
       btnPlayer.setOnMouseClicked(event -> {
-        getChildren().add(menu2);
-
         GameRoot.GameMode = "Normal";
-        TranslateTransition tt = new TranslateTransition(Duration.seconds(TransTtDur), menu1);
-        tt.setToX(menu1.getTranslateX() - offset);
-        TranslateTransition tt1 = new TranslateTransition(Duration.seconds(TransTt1Dur), menu2);
-        tt1.setToX(menu1.getTranslateX());
 
-        tt.play();
-        tt1.play();
+        getChildren().add(menu2);
+        TranslateTransition translateTransition =
+            new TranslateTransition(Duration.seconds(TransTtDur), menu1);
+        translateTransition.setToX(menu1.getTranslateX() - offset);
+        TranslateTransition translateTransition1 =
+            new TranslateTransition(Duration.seconds(TransTt1Dur), menu2);
+        translateTransition1.setToX(menu1.getTranslateX());
 
-        tt.setOnFinished(evt -> {
+        translateTransition.play();
+        translateTransition1.play();
+
+        translateTransition.setOnFinished(evt -> {
           getChildren().remove(menu1);
         });
-    });
-      
+      });
+
       int damageHorror = 25;
       int damageNightmare = 20;
-      
+
       MenuButton btnHorror = new MenuButton("Horror");
       btnHorror.setOnMouseClicked(event -> {
         try {
@@ -219,8 +234,8 @@ public class MainGameMenu extends Application {
         } catch (Exception e) {
           e.printStackTrace();
         }
-    });
-      
+      });
+
       MenuButton btnNightmare = new MenuButton("Nightmare");
       btnNightmare.setOnMouseClicked(event -> {
         try {
@@ -231,25 +246,27 @@ public class MainGameMenu extends Application {
         } catch (Exception e) {
           e.printStackTrace();
         }
-    });
-      
+      });
+
       /** back to change bot/player playing */
       MenuButton btnBack1 = new MenuButton("Back");
       btnBack1.setOnMouseClicked(event -> {
-          getChildren().add(menu1);
+        getChildren().add(menu1);
 
-          TranslateTransition tt = new TranslateTransition(Duration.seconds(TransTtDur), menu2);
-          tt.setToX(menu2.getTranslateX() + offset);
+        TranslateTransition translateTransition =
+            new TranslateTransition(Duration.seconds(TransTtDur), menu2);
+        translateTransition.setToX(menu2.getTranslateX() + offset);
 
-          TranslateTransition tt1 = new TranslateTransition(Duration.seconds(TransTt1Dur), menu1);
-          tt1.setToX(menu2.getTranslateX());
+        TranslateTransition translateTransition1 =
+            new TranslateTransition(Duration.seconds(TransTt1Dur), menu1);
+        translateTransition1.setToX(menu2.getTranslateX());
 
-          tt.play();
-          tt1.play();
+        translateTransition.play();
+        translateTransition1.play();
 
-          tt.setOnFinished(evt -> {
-              getChildren().remove(menu2);
-          });
+        translateTransition.setOnFinished(evt -> {
+          getChildren().remove(menu2);
+        });
       });
 
       MenuButton btnExit = new MenuButton("Exit");
@@ -257,9 +274,9 @@ public class MainGameMenu extends Application {
         System.exit(0);
       });
 
-      menu0.getChildren().addAll( btnNewGame, btnExit);
+      menu0.getChildren().addAll(btnNewGame, btnExit);
       getChildren().add(menu0);
-      
+
       menu1.getChildren().addAll(btnBot, btnPlayer, btnBack);
       menu2.getChildren().addAll(btnHorror, btnNightmare, btnBack1);
     }
@@ -267,17 +284,19 @@ public class MainGameMenu extends Application {
 
   /**
    * Creates a single menu button
+   * 
    * @author badabum007
-   */ 
+   */
   private static class MenuButton extends StackPane {
     /** button label */
     private Text text;
 
     /**
      * Creates a single button and adds button effects
+     * 
      * @throws FileNotFoundException
      * @param name - button name
-     */ 
+     */
     public MenuButton(String name) throws FileNotFoundException {
       /** setting font */
       text = new Text(name);
@@ -285,7 +304,7 @@ public class MainGameMenu extends Application {
       /** load custom font */
       Font font;
       font = Font.loadFont(new FileInputStream(new File("res/fonts/Kankin.otf")), 20);
-      text.setFont(font); 
+      text.setFont(font);
       text.setFill(Color.WHITE);
 
       /** adding rectangle over button */

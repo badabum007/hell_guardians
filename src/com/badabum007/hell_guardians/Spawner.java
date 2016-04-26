@@ -50,7 +50,7 @@ public class Spawner{
       X = (int)(enemies.get(j).posX);
       if (X > GameWindow.offsetXY)
       {
-        enemies.get(j).moveX(-offset);
+        enemies.get(j).moveX(offset);
         continue;
       }
       else{
