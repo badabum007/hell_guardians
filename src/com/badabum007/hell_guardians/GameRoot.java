@@ -58,9 +58,7 @@ public class GameRoot extends Pane {
     towers = new ArrayList<Tower>();
     Spawn = new Spawner[rows];
     this.setVisible(false);
-    if (gameMode == "Auto") {
-      bot = new Bot();
-    }
+    bot = new Bot();
   }
 
   /**
