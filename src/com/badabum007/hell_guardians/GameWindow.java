@@ -24,6 +24,8 @@ public class GameWindow {
   static GameRoot gameRoot = new GameRoot();
   private Scene gameScene;
   static Pane All;
+  
+  int height = 600, width = 800;
 
   /**
    * Setting up game scene
@@ -35,7 +37,6 @@ public class GameWindow {
     gameScene = new Scene(All);
 
     /** add awesome lava background */
-    int height = 600, width = 800;
     All.setPrefSize(width, height);
     InputStream is = Files.newInputStream(Paths.get("res/images/texture.jpg"));
     Image img = new Image(is);

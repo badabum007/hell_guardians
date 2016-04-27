@@ -120,6 +120,9 @@ public class MainGameMenu extends Application {
     final int offset = 800;
     double TransTtDur = 0.25;
     double TransTt1Dur = 0.5;
+    
+    int damageHorror = 25;
+    int damageNightmare = 20;
 
     /**
      * Adds all necessary buttons and sets their behavior
@@ -220,9 +223,6 @@ public class MainGameMenu extends Application {
           getChildren().remove(menu1);
         });
       });
-
-      int damageHorror = 25;
-      int damageNightmare = 20;
 
       MenuButton btnHorror = new MenuButton("Horror");
       btnHorror.setOnMouseClicked(event -> {

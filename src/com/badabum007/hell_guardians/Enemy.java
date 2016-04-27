@@ -23,7 +23,6 @@ public class Enemy extends Pane {
   public double posX;
   public double posY;
   int health = 100;
-  final int zeroHealth = 0;
 
   final int width = 145;
   final int height = 100;
@@ -77,7 +76,7 @@ public class Enemy extends Pane {
    */
   public void getDamage(int damage) {
     health = health - damage;
-    if (health <= zeroHealth) {
+    if (health <= 0) {
       this.setVisible(false);
       GameWindow.gameRoot.getChildren().remove(this);
       this.animation.stop();
