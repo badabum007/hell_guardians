@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Random;
-
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -47,7 +46,7 @@ public class GameRoot extends Pane {
   
   double shootTimeStep = 0.1;
 
-  int enemyCount = 2;
+  int enemyCount = 1;
   long timeToNextWave = 500;
   final long timeToNextMob = 100;
 
@@ -56,7 +55,6 @@ public class GameRoot extends Pane {
 
   long frameTimerInit = 0;
   
-  int randChance = 3;
   int botFastestTime = 50;
   int botRandomPart = 70;
 
@@ -102,13 +100,11 @@ public class GameRoot extends Pane {
         if (everyTick > timeToNextMob) {
           everyTick = 0;
           /** generate new wave */
-          if (waveTick > (int) (new Random().nextInt((int) timeToNextWave))) {
+          if (waveTick >  timeToNextWave) {
             timeToNextWave += timeToNextMob;
             enemyCount += 1;
             for (int i = 0; i < rows; i++) {
-              if ((int) (new Random().nextInt(randChance)) == 0) {
-                Spawn[i].count += (int) (new Random().nextInt((int) enemyCount));
-              }
+                Spawn[i].count += enemyCount;     
             }
             waveTick = 0;
           }
@@ -117,9 +113,7 @@ public class GameRoot extends Pane {
             /** generate new mob */
             if (Spawn[i].iterator < Spawn[i].count) {
               try {
-                if ((int) (new Random().nextInt(randChance)) == 0) {
                   Spawn[i].CreateMonster();
-                }
                 /** update enemies position */
                 if (now / updateFrequency != frameTimer.get()) {
                   if (Spawn[i].update() < 0) {
