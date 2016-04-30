@@ -46,10 +46,11 @@ public class Bot {
       coordX = (int) (new Random().nextInt(GameRoot.columns));
     } while (towerMap[coordY][coordX] == true);
     towerMap[coordY][coordX] = true;
-    GameWindow.gameRoot.sMan.addToFile(GameWindow.gameRoot.sMan.tempFileName,
-       coordX + " " + coordY + " " + GameWindow.gameRoot.towerTime + "\n");
+    
     Tower tower = new Tower(coordX * GameWindow.blockSize + GameWindow.offsetXY,
         coordY * GameWindow.blockSize + GameWindow.offsetXY);
+    GameWindow.gameRoot.sMan.addToFile(GameWindow.gameRoot.sMan.tempFileName,
+        tower.posX + " " + tower.posY + " " + GameWindow.gameRoot.towerTime + "\n");
     GameWindow.gameRoot.towers.add(tower);
     currentCount++;
   }

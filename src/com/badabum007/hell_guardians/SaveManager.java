@@ -21,7 +21,8 @@ public class SaveManager {
   String tempFileName;
   String dateFormat ="yyyyMMdd_HHmmss";
   String extension = ".sav";
-  String saveDir = "saves/";
+  static String saveDir = "saves/";
+  static String loadGameSave;
   
   SaveManager(String name){
     tempFileName = name;

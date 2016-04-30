@@ -57,7 +57,7 @@ public class GameRoot extends Pane {
   long frameTimerInit = 0;
 
   int botFastestTime = 50;
-  int botRandomPart = 70;
+  int botRandomPart = 500;
 
   /** RePlay file */
   File saveFile;
@@ -72,7 +72,7 @@ public class GameRoot extends Pane {
   int maxStringCount = 0;
 
   SaveManager sMan;
-  String tempFileName = "positions.txt";
+  String tempFileName = "saves/positions.txt";
 
   int argsCount = 3;
   int counter;
@@ -115,27 +115,30 @@ public class GameRoot extends Pane {
 
     /** Reading args from file and writing the in to array */
     if (gameMode == "RePlay") {
-      towerTime++;
       counter = 0;
       try {
         String[] args = new String[argsCount];
-        BufferedReader reader = new BufferedReader(new FileReader(sMan.tempSave));
+        BufferedReader reader = new BufferedReader(new FileReader(SaveManager.loadGameSave));
         String line;
         maxStringCount = 0;
+        Shot.damage = Integer.parseInt(reader.readLine());
         /** Counting string count for array memory allocation */
         while ((line = reader.readLine()) != null) {
           maxStringCount++;
         }
         reader.close();
-        reader = new BufferedReader(new FileReader(sMan.tempSave));
+        
+        reader = new BufferedReader(new FileReader(SaveManager.loadGameSave));
         argsFromFile = new long[maxStringCount][argsCount];
+        reader.readLine();
         while ((line = reader.readLine()) != null) {
           args = line.split(" ");
           for (int i = 0; i < argsCount; i++) {
             argsFromFile[counter][i] = Integer.parseInt(args[i]);
           }
           counter++;
-        } ;
+        } 
+        reader.close();
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -240,7 +243,9 @@ public class GameRoot extends Pane {
                 getChildren().add(imgView);
                 this.stop();
                 is.close();
-                sMan.createSaveFile();
+                if (gameMode != "RePlay") {
+                  sMan.createSaveFile();
+                }
                 AnimationTimer exitTimer = new AnimationTimer() {
                   long exitClock = 0;
 
@@ -254,7 +259,7 @@ public class GameRoot extends Pane {
                   }
                 };
                 exitTimer.start();
-
+                break;
               } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
