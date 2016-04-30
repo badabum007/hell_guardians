@@ -1,12 +1,13 @@
 package com.badabum007.hell_guardians;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Random;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -43,7 +44,7 @@ public class GameRoot extends Pane {
 
   /** existing enemy spawners */
   Spawner[] Spawn;
-  
+
   double shootTimeStep = 0.1;
 
   int enemyCount = 1;
@@ -54,15 +55,44 @@ public class GameRoot extends Pane {
   LongProperty frameTimer;
 
   long frameTimerInit = 0;
-  
+
   int botFastestTime = 50;
   int botRandomPart = 70;
+
+  /** RePlay file */
+  File saveFile;
+
+  /** tower built time */
+  long towerTime;
+
+  /** save arguments from file */
+  long argsFromFile[][];
+
+  /** number of strings in file */
+  int maxStringCount = 0;
+
+  SaveManager sMan;
+  String tempFileName = "positions.txt";
+
+  int argsCount = 3;
+  int counter;
+
+  int xArg = 0;
+  int yArg = 1;
+  int timeArg = 2;
+
+  int botsPerWaveInc = 1;
+  long sleepTime = 5000;
+  long tickPerSec = 55;
+  long exitTimerLimit = tickPerSec * 5;
 
   public GameRoot() {
     towers = new ArrayList<Tower>();
     Spawn = new Spawner[rows];
     this.setVisible(false);
     bot = new Bot();
+    towerTime = 0;
+    sMan = new SaveManager(tempFileName);
   }
 
   /**
@@ -79,7 +109,38 @@ public class GameRoot extends Pane {
     menuMp.play();
     MediaView mediaView = new MediaView(menuMp);
     getChildren().add(mediaView);
+
+    sMan.createTempFile(tempFileName);
     CreateMap();
+
+    /** Reading args from file and writing the in to array */
+    if (gameMode == "RePlay") {
+      towerTime++;
+      counter = 0;
+      try {
+        String[] args = new String[argsCount];
+        BufferedReader reader = new BufferedReader(new FileReader(sMan.tempSave));
+        String line;
+        maxStringCount = 0;
+        /** Counting string count for array memory allocation */
+        while ((line = reader.readLine()) != null) {
+          maxStringCount++;
+        }
+        reader.close();
+        reader = new BufferedReader(new FileReader(sMan.tempSave));
+        argsFromFile = new long[maxStringCount][argsCount];
+        while ((line = reader.readLine()) != null) {
+          args = line.split(" ");
+          for (int i = 0; i < argsCount; i++) {
+            argsFromFile[counter][i] = Integer.parseInt(args[i]);
+          }
+          counter++;
+        } ;
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     for (int i = 0; i < rows; i++) {
       Spawn[i] = new Spawner(enemyCount, MainGameMenu.width,
           GameWindow.offsetXY + i * GameWindow.blockSize);
@@ -92,19 +153,23 @@ public class GameRoot extends Pane {
       long everyTick = 0;
       long waveTick = 0;
       long everyTickForBot = 0;
+      /** counter for reading args from file */
+      int argsCounter = 0;
 
       @Override
       public void handle(long now) {
+        towerTime++;
         everyTick++;
         waveTick++;
         if (everyTick > timeToNextMob) {
           everyTick = 0;
           /** generate new wave */
-          if (waveTick >  timeToNextWave) {
+          if (waveTick > timeToNextWave) {
             timeToNextWave += timeToNextMob;
-            enemyCount += 1;
+            enemyCount += botsPerWaveInc;
+            Enemy.healthMax += Enemy.healthMax * 0.2;
             for (int i = 0; i < rows; i++) {
-                Spawn[i].count += enemyCount;     
+              Spawn[i].count += enemyCount;
             }
             waveTick = 0;
           }
@@ -113,25 +178,24 @@ public class GameRoot extends Pane {
             /** generate new mob */
             if (Spawn[i].iterator < Spawn[i].count) {
               try {
-                  Spawn[i].CreateMonster();
-                /** update enemies position */
-                if (now / updateFrequency != frameTimer.get()) {
-                  if (Spawn[i].update() < 0) {
-                    InputStream is;
-                    try {
-                      is = Files.newInputStream(Paths.get("res/images/game_over.jpg"));
-                      Image img = new Image(is);
-                      ImageView imgView = new ImageView(img);
-                      getChildren().add(imgView);
-                      this.stop();
-                      is.close();
-                    } catch (IOException e) {
-                      // TODO Auto-generated catch block
-                      e.printStackTrace();
-                    }
-                  } ;
-                }
-                frameTimer.set(now / updateFrequency);
+                Spawn[i].CreateMonster();
+              } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
+            }
+          }
+        }
+
+        /** Setting towers according to built time */
+        if (gameMode == "RePlay") {
+          if (argsCounter < maxStringCount) {
+            if (towerTime > argsFromFile[argsCounter][timeArg]) {
+              Tower tower;
+              try {
+                tower = new Tower(argsFromFile[argsCounter][xArg], argsFromFile[argsCounter][yArg]);
+                towers.add(tower);
+                argsCounter++;
               } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -176,11 +240,26 @@ public class GameRoot extends Pane {
                 getChildren().add(imgView);
                 this.stop();
                 is.close();
+                sMan.createSaveFile();
+                AnimationTimer exitTimer = new AnimationTimer() {
+                  long exitClock = 0;
+
+                  @Override
+                  public void handle(long now2) {
+                    exitClock++;
+                    if (exitClock > exitTimerLimit) {
+                      this.stop();
+                      java.lang.System.exit(0);
+                    }
+                  }
+                };
+                exitTimer.start();
+
               } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
               }
-            } ;
+            }
           }
         }
         frameTimer.set(now / updateFrequency);
