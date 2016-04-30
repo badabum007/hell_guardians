@@ -127,7 +127,7 @@ public class GameRoot extends Pane {
           maxStringCount++;
         }
         reader.close();
-        
+
         reader = new BufferedReader(new FileReader(SaveManager.loadGameSave));
         argsFromFile = new long[maxStringCount][argsCount];
         reader.readLine();
@@ -137,7 +137,7 @@ public class GameRoot extends Pane {
             argsFromFile[counter][i] = Integer.parseInt(args[i]);
           }
           counter++;
-        } 
+        }
         reader.close();
       } catch (IOException e) {
         e.printStackTrace();

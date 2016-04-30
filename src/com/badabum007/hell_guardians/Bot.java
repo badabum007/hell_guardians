@@ -40,13 +40,13 @@ public class Bot {
    * @throws IOException
    */
   void createTower() throws IOException {
-    /** check if the block is free*/
+    /** check if the block is free */
     do {
       coordY = (int) (new Random().nextInt(GameRoot.rows));
       coordX = (int) (new Random().nextInt(GameRoot.columns));
     } while (towerMap[coordY][coordX] == true);
     towerMap[coordY][coordX] = true;
-    
+
     Tower tower = new Tower(coordX * GameWindow.blockSize + GameWindow.offsetXY,
         coordY * GameWindow.blockSize + GameWindow.offsetXY);
     GameWindow.gameRoot.sMan.addToFile(GameWindow.gameRoot.sMan.tempFileName,
