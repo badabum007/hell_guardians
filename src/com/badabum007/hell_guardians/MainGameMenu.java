@@ -6,9 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import javax.swing.JFileChooser;
-
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -167,11 +167,15 @@ public class MainGameMenu extends Application {
       MenuButton btnRePlay = new MenuButton("Watch replay");
       btnRePlay.setOnMouseClicked(event -> {
         try {
+          
+          /** file choose dialog */
+          FileFilter filter = new FileNameExtensionFilter("Hell guardians saves", "sav");
           JFileChooser dialog = new JFileChooser(new File("saves"));
           dialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
           dialog.setApproveButtonText("Open");
           dialog.setDialogTitle("Open save");
           dialog.setDialogType(JFileChooser.OPEN_DIALOG);
+          dialog.setFileFilter(filter);
           dialog.setMultiSelectionEnabled(false);
 
           if (dialog.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {

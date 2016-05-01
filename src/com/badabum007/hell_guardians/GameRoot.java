@@ -72,7 +72,7 @@ public class GameRoot extends Pane {
   int maxStringCount = 0;
 
   SaveManager sMan;
-  String tempFileName = "saves/positions.txt";
+  String tempFileName = "saves/logs.txt";
 
   int argsCount = 3;
   int counter;
