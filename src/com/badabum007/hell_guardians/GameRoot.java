@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -28,6 +30,8 @@ public class GameRoot extends Pane {
   /** existing towers */
   ArrayList<Tower> towers;
 
+  ArrayList<Shot> shots;
+
   /** game mode: Auto(botplay) or Normal */
   public static String gameMode;
 
@@ -43,7 +47,7 @@ public class GameRoot extends Pane {
   final int updateFrequency = 10000000;
 
   /** existing enemy spawners */
-  Spawner[] Spawn;
+  Spawner[] spawn;
 
   double shootTimeStep = 0.1;
 
@@ -86,9 +90,14 @@ public class GameRoot extends Pane {
   long tickPerSec = 55;
   long exitTimerLimit = tickPerSec * 5;
 
+  Iterator iter;
+
+  Shot tempShot;
+
   public GameRoot() {
     towers = new ArrayList<Tower>();
-    Spawn = new Spawner[rows];
+    shots = new ArrayList<Shot>();
+    spawn = new Spawner[rows];
     this.setVisible(false);
     bot = new Bot();
     towerTime = 0;
@@ -145,7 +154,7 @@ public class GameRoot extends Pane {
     }
 
     for (int i = 0; i < rows; i++) {
-      Spawn[i] = new Spawner(enemyCount, MainGameMenu.width,
+      spawn[i] = new Spawner(enemyCount, MainGameMenu.width,
           GameWindow.offsetXY + i * GameWindow.blockSize);
     }
     /** timer description */
@@ -172,16 +181,16 @@ public class GameRoot extends Pane {
             enemyCount += botsPerWaveInc;
             Enemy.healthMax += Enemy.healthMax * 0.2;
             for (int i = 0; i < rows; i++) {
-              Spawn[i].count += enemyCount;
+              spawn[i].count += enemyCount;
             }
             waveTick = 0;
           }
 
           for (int i = 0; i < rows; i++) {
             /** generate new mob */
-            if (Spawn[i].iterator < Spawn[i].count) {
+            if (spawn[i].iterator < spawn[i].count) {
               try {
-                Spawn[i].CreateMonster();
+                spawn[i].CreateMonster();
               } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -234,7 +243,7 @@ public class GameRoot extends Pane {
         /** update enemy position */
         if (now / updateFrequency != frameTimer.get()) {
           for (int i = 0; i < rows; i++) {
-            if (Spawn[i].update() < 0) {
+            if (spawn[i].update() < 0) {
               InputStream is;
               try {
                 is = Files.newInputStream(Paths.get("res/images/game_over.jpg"));
@@ -266,6 +275,15 @@ public class GameRoot extends Pane {
               }
             }
           }
+
+          iter = shots.iterator();
+          while (iter.hasNext()) {
+            tempShot = (Shot) iter.next();
+            if (tempShot.update() < 0) {
+              iter.remove();
+            }
+          }
+
         }
         frameTimer.set(now / updateFrequency);
         checkForShootTimer.set(now / updateFrequency);
@@ -292,14 +310,14 @@ public class GameRoot extends Pane {
   /** find target and generate a shot */
   public void CheckForShooting() {
     for (int i = 0; i < rows; i++) {
-      for (int j = 0; j < Spawn[i].enemies.size(); j++) {
-        if (Spawn[i].enemies.get(j).health <= 0) {
-          Spawn[i].enemies.remove(j);
+      for (int j = 0; j < spawn[i].enemies.size(); j++) {
+        if (spawn[i].enemies.get(j).health <= 0) {
+          spawn[i].enemies.remove(j);
           continue;
         }
         for (int k = 0; k < towers.size(); k++) {
-          double EnemyPosX = Spawn[i].enemies.get(j).getTranslateX();
-          double EnemyPosY = Spawn[i].enemies.get(j).getTranslateY();
+          double EnemyPosX = spawn[i].enemies.get(j).getTranslateX();
+          double EnemyPosY = spawn[i].enemies.get(j).getTranslateY();
           double TowerPosX = towers.get(k).getTranslateX();
           double TowerPosY = towers.get(k).getTranslateY();
           /** enemy is in a towers line in front of the tower */
@@ -308,9 +326,9 @@ public class GameRoot extends Pane {
             /** cooldown checking */
             if (towers.get(k).timeToShoot <= 0) {
               towers.get(k).timeToShoot = towers.get(k).shootingCooldown;
-              towers.get(k).shots =
-                  new Shot(Spawn[i].enemies.get(j), towers.get(k).posX + GameWindow.blockSize / 2,
-                      towers.get(k).posY + GameWindow.blockSize / 2);
+              shots.add(
+                  new Shot(spawn[i].enemies.get(j), towers.get(k).posX + GameWindow.blockSize / 2,
+                      towers.get(k).posY + GameWindow.blockSize / 2));
             }
           }
         }

@@ -23,7 +23,6 @@ public class Tower extends Pane {
   long posX;
   long posY;
   double attackRange = MainGameMenu.width - GameWindow.offsetXY;
-  public Shot shots;
   final double shootingCooldown = 10;
 
   /** time to next shot */
