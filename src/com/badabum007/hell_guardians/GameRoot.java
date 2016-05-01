@@ -90,7 +90,7 @@ public class GameRoot extends Pane {
   long tickPerSec = 55;
   long exitTimerLimit = tickPerSec * 5;
 
-  Iterator iter;
+  Iterator<Shot> iter;
 
   Shot tempShot;
 

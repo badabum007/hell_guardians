@@ -43,7 +43,7 @@ public class Shot {
   final int height = 70;
   final double rotationDegree = -90;
   final int updateTimer = 1;
-  final int stepSize = 15;
+  final int stepSize = 5;
   Enemy targetEnemy;
 
   /** shot path */
