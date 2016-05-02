@@ -26,6 +26,8 @@ import javafx.util.Duration;
 public class Shot {
 
   ImageView imageView;
+  static InputStream is;
+  static Image img;
 
   Enemy target;
   public static int damage;
@@ -57,26 +59,15 @@ public class Shot {
    * @param startX - start X coordinate
    * @param startY - start Y coordinate
    */
-  public Shot(Enemy target, double startX, double startY) {
+  public Shot(Enemy target, double startX, double startY) throws IOException {
+    imageView = new ImageView(img);
+    imageView.setViewport(new Rectangle2D(offsetX, offsetY, width, height));
+    imageView.setRotate(rotationDegree);
+    imageView.setTranslateX(startX);
+    imageView.setTranslateY(startY - GameWindow.blockSize / 2);
+    GameWindow.gameRoot.getChildren().add(imageView);
 
-    InputStream is;
-    try {
-      is = Files.newInputStream(Paths.get("res/images/sarcher_sprites.png"));
-      Image img = new Image(is);
-      is.close();
-      imageView = new ImageView(img);
-      imageView.setViewport(new Rectangle2D(offsetX, offsetY, width, height));
-      imageView.setRotate(rotationDegree);
-      imageView.setTranslateX(startX);
-      imageView.setTranslateY(startY - GameWindow.blockSize / 2);
-      GameWindow.gameRoot.getChildren().add(imageView);
-
-      targetEnemy = target;
-
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    targetEnemy = target;
   }
 
   public int update() {
@@ -89,5 +80,11 @@ public class Shot {
       return -1;
     }
     return 0;
+  }
+  
+  public static void init() throws IOException{
+    is = Files.newInputStream(Paths.get("res/images/sarcher_sprites.png"));
+    img = new Image(is);
+    is.close();
   }
 }

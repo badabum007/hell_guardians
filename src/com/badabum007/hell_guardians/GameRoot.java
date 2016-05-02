@@ -118,6 +118,9 @@ public class GameRoot extends Pane {
     menuMp.play();
     MediaView mediaView = new MediaView(menuMp);
     getChildren().add(mediaView);
+    Shot.init();
+    Enemy.init();
+    Block.init();
 
     sMan.createTempFile(tempFileName);
     CreateMap();
@@ -326,9 +329,14 @@ public class GameRoot extends Pane {
             /** cooldown checking */
             if (towers.get(k).timeToShoot <= 0) {
               towers.get(k).timeToShoot = towers.get(k).shootingCooldown;
-              shots.add(
-                  new Shot(spawn[i].enemies.get(j), towers.get(k).posX + GameWindow.blockSize / 2,
-                      towers.get(k).posY + GameWindow.blockSize / 2));
+              try {
+                shots.add(
+                    new Shot(spawn[i].enemies.get(j), towers.get(k).posX + GameWindow.blockSize / 2,
+                        towers.get(k).posY + GameWindow.blockSize / 2));
+              } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
             }
           }
         }
