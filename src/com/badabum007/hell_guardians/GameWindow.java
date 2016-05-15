@@ -27,6 +27,7 @@ public class GameWindow {
 
   int height = 600, width = 800;
 
+
   /**
    * Setting up game scene
    * 
@@ -44,13 +45,13 @@ public class GameWindow {
     imgView.setFitWidth(width);
     imgView.setFitHeight(height);
     is.close();
-    
+
     All.getChildren().addAll(imgView, gameRoot);
     primaryStage.setScene(gameScene);
-    
+
     gameRoot.setVisible(true);
-    //gameRoot.Start();
     gameRoot.StartGame();
-    //gameRoot.CheckForShooting();
+    //CheckForShooting();
   }
+  
 }

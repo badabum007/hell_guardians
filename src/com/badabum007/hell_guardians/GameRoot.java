@@ -12,22 +12,30 @@ import java.util.Iterator;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 /**
  * game engine class
  * 
  * @author badabum007
  */
-public class GameRoot extends Pane {
+public class GameRoot extends Pane implements Runnable {
 
+  public static final Object monitor = new Object();
   Thread thread;
-  private static final Object monitor = new Object();
+
+  public Money money;
+  public Integer yourMoney = 0;
+  final public Integer enemyCost = 100;
 
   /** existing towers */
   ArrayList<Tower> towers;
@@ -99,6 +107,57 @@ public class GameRoot extends Pane {
 
   Shot tempShot;
 
+  @Override
+  public void run() {
+    UpdateMoney();
+  }
+
+  public void Start() {
+    thread.start();
+  }
+
+  /** operations with money */
+  class Money extends Parent {
+
+    // make values as Integers to convert them into String later
+    private Integer money;
+    Text m;
+    // create new Pane to overlap the background
+    private Pane pm;
+
+    public Money() throws IOException {
+      pm = new Pane();
+      int imgWidth = 50;
+
+      /** setting money picture */
+      int moneyTransX = 620;
+      InputStream is = Files.newInputStream(Paths.get("res/images/souls.png"));
+      Image img = new Image(is);
+      ImageView imgView = new ImageView(img);
+      imgView.setFitWidth(imgWidth);
+      imgView.setPreserveRatio(true);
+      imgView.setTranslateX(moneyTransX);
+
+      is.close();
+      money = 0;
+
+      /** setting money text */
+      int fontSize = 20, textTransY = 70;
+
+      m = new Text(moneyTransX, textTransY, money.toString());
+      m.setFont(new Font(fontSize));
+      m.setFill(Color.GREY);
+
+      pm.getChildren().addAll(imgView, m);
+      getChildren().add(pm);
+    }
+
+    /** methods to change value of money and scores */
+    public void setMoney(Integer x) {
+      m.setText(x.toString());
+    }
+  }
+
   public GameRoot() {
     towers = new ArrayList<Tower>();
     shots = new ArrayList<Shot>();
@@ -107,7 +166,7 @@ public class GameRoot extends Pane {
     bot = new Bot();
     towerTime = 0;
     sMan = new SaveManager(tempFileName);
-    // thread = new Thread(this);
+    thread = new Thread(this);
 
     Media media = new Media(
         new File("res/music/Gonzalo_Varela_-_03_-_Underwater_Lab.mp3").toURI().toString());
@@ -118,28 +177,24 @@ public class GameRoot extends Pane {
     MediaView mediaView = new MediaView(menuMp);
     getChildren().add(mediaView);
     sMan.createTempFile(tempFileName);
+
     try {
       Shot.init();
       Enemy.init();
       Block.init();
+      money = new Money();
+      getChildren().add(money);
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
 
-  public void Start() {
-    thread.start();
-  }
-
-  /*
-   * @Override public void run() { CheckForShooting(); }
-   */
-
   /**
    * game logic implementation
    */
   public void StartGame() throws IOException {
+
     if (difficulty == "Horror") {
       Shot.damage = damageHorror;
     }
@@ -261,22 +316,11 @@ public class GameRoot extends Pane {
 
         /** check if the tower is ready for shot */
         if (now / updateFrequency != checkForShootTimer.get()) {
-          // TODO
-          // wait();
-          /*
-           * synchronized (monitor) { try { monitor.notify(); monitor.wait(); } catch
-           * (InterruptedException e) {
-           */
-          // TODO Auto-generated catch block
-          CheckForShooting();
           /** reduce cooldown */
+          CheckForShooting();
           for (int i = 0; i < towers.size(); i++) {
             towers.get(i).timeToShoot -= shootTimeStep;
           }
-          // monitor.notify();
-          // e.printStackTrace();
-          // }
-          // }
         }
         /** update enemy position */
         if (now / updateFrequency != frameTimer.get()) {
@@ -328,6 +372,7 @@ public class GameRoot extends Pane {
       }
     };
     timer.start();
+    Start();
   }
 
   /**
@@ -335,7 +380,6 @@ public class GameRoot extends Pane {
    * 
    * @throws IOException
    */
-
   public void CreateMap() throws IOException {
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < columns; j++) {
@@ -345,18 +389,34 @@ public class GameRoot extends Pane {
     }
   }
 
+  public void UpdateMoney() {
+
+    while (true) {
+      synchronized (monitor) {
+        try {
+          monitor.wait();
+          yourMoney += enemyCost;
+          money.setMoney(yourMoney);
+        } catch (InterruptedException e1) {
+          // TODO Auto-generated catch block
+          e1.printStackTrace();
+        }
+      }
+    }
+  }
+
   /** find target and generate a shot */
   public void CheckForShooting() {
-    /*
-     * synchronized (monitor) { try { monitor.wait(); } catch (InterruptedException e1) {
-     */
-    // TODO Auto-generated catch block
-    // e1.printStackTrace();
+
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < spawn[i].enemies.size(); j++) {
         if (spawn[i].enemies.get(j).health <= 0) {
-          spawn[i].enemies.remove(j);
-          continue;
+
+          synchronized (monitor) {
+            monitor.notify();
+            spawn[i].enemies.remove(j);
+            continue;
+          }
         }
         for (int k = 0; k < towers.size(); k++) {
           double EnemyPosX = spawn[i].enemies.get(j).getTranslateX();
@@ -382,11 +442,5 @@ public class GameRoot extends Pane {
         }
       }
     }
-
-    /*
-     * monitor.notify(); }
-     */
-    // }
-
   }
 }
