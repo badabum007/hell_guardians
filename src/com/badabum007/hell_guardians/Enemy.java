@@ -72,7 +72,7 @@ public class Enemy extends Pane {
   /**
    * Enemy movement control
    * 
-   * @param x - number of steps to move (if x < 0 enemy moves from right to left)
+   * @param x - number of steps to move
    */
   public void moveX(double x) {
     this.setTranslateX(this.getTranslateX() - x);

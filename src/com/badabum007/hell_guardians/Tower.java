@@ -41,8 +41,8 @@ public class Tower extends Pane {
   /**
    * Build a tower
    * 
-   * @param posX - tower X position
-   * @param posY - tower Y position
+   * @param x - tower X position
+   * @param y - tower Y position
    * @throws IOException
    */
   public Tower(long x, long y) throws IOException {

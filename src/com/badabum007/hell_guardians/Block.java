@@ -25,6 +25,7 @@ public class Block extends Pane {
    * 
    * @param x - X coordinate
    * @param y - Y coordinate
+   * @throws IOException
    */
   public Block(int x, int y) throws IOException {
     block = new ImageView();

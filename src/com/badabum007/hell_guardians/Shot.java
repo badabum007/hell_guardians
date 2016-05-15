@@ -4,19 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import javafx.animation.AnimationTimer;
 import javafx.animation.PathTransition;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.util.Duration;
 
 /**
  * Tower shot class

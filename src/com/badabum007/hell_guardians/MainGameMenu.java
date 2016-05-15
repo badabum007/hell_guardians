@@ -38,7 +38,8 @@ import javafx.util.Duration;
  * @author badabum007
  */
 public class MainGameMenu extends Application {
-
+  
+  public Thread mainThread;
   /** define the stage as public for communication between interface classes */
   public Stage theStage;
   /** create object for our buttons */
@@ -55,6 +56,7 @@ public class MainGameMenu extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
 
+    mainThread = Thread.currentThread();
     root = new Pane();
     gameWindow = new GameWindow();
     theStage = new Stage();
@@ -123,8 +125,8 @@ public class MainGameMenu extends Application {
     double TransTtDur = 0.25;
     double TransTt1Dur = 0.5;
 
-    int damageHorror = 25;
-    int damageNightmare = 20;
+   // int damageHorror = 25;
+    //int damageNightmare = 20;
 
     /**
      * Adds all necessary buttons and sets their behavior
@@ -257,7 +259,7 @@ public class MainGameMenu extends Application {
       btnHorror.setOnMouseClicked(event -> {
         try {
           /** stop playing and change scene */
-          Shot.damage = damageHorror;
+          GameRoot.difficulty = "Horror";
           menuMp.stop();
           gameWindow.show(theStage);
         } catch (Exception e) {
@@ -268,7 +270,7 @@ public class MainGameMenu extends Application {
       MenuButton btnNightmare = new MenuButton("Nightmare");
       btnNightmare.setOnMouseClicked(event -> {
         try {
-          Shot.damage = damageNightmare;
+          GameRoot.difficulty = "Nightmare";
           /** stop playing and change scene */
           menuMp.stop();
           gameWindow.show(theStage);

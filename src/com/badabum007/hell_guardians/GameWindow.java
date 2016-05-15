@@ -44,11 +44,13 @@ public class GameWindow {
     imgView.setFitWidth(width);
     imgView.setFitHeight(height);
     is.close();
-
-    gameRoot.setVisible(true);
-    gameRoot.StartGame();
-
+    
     All.getChildren().addAll(imgView, gameRoot);
     primaryStage.setScene(gameScene);
+    
+    gameRoot.setVisible(true);
+    //gameRoot.Start();
+    gameRoot.StartGame();
+    //gameRoot.CheckForShooting();
   }
 }

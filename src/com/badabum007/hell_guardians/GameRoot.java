@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -27,13 +26,16 @@ import javafx.scene.media.MediaView;
  */
 public class GameRoot extends Pane {
 
+  Thread thread;
+  private static final Object monitor = new Object();
+
   /** existing towers */
   ArrayList<Tower> towers;
-
   ArrayList<Shot> shots;
 
   /** game mode: Auto(botplay) or Normal */
   public static String gameMode;
+  public static String difficulty;
 
   /** bot for Auto mode */
   Bot bot;
@@ -70,7 +72,7 @@ public class GameRoot extends Pane {
   long towerTime;
 
   /** save arguments from file */
-  long argsFromFile[][];
+  long[][] argsFromFile;
 
   /** number of strings in file */
   int maxStringCount = 0;
@@ -90,6 +92,9 @@ public class GameRoot extends Pane {
   long tickPerSec = 55;
   long exitTimerLimit = tickPerSec * 5;
 
+  int damageHorror = 25;
+  int damageNightmare = 20;
+
   Iterator<Shot> iter;
 
   Shot tempShot;
@@ -102,27 +107,46 @@ public class GameRoot extends Pane {
     bot = new Bot();
     towerTime = 0;
     sMan = new SaveManager(tempFileName);
+    // thread = new Thread(this);
+
+    Media media = new Media(
+        new File("res/music/Gonzalo_Varela_-_03_-_Underwater_Lab.mp3").toURI().toString());
+    menuMp = new MediaPlayer(media);
+    /** song autostart after adding */
+    /** play song in infinity loop */
+    menuMp.setCycleCount(MediaPlayer.INDEFINITE);
+    MediaView mediaView = new MediaView(menuMp);
+    getChildren().add(mediaView);
+    sMan.createTempFile(tempFileName);
+    try {
+      Shot.init();
+      Enemy.init();
+      Block.init();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
+
+  public void Start() {
+    thread.start();
+  }
+
+  /*
+   * @Override public void run() { CheckForShooting(); }
+   */
 
   /**
    * game logic implementation
    */
   public void StartGame() throws IOException {
-    Media media = new Media(
-        new File("res/music/Gonzalo_Varela_-_03_-_Underwater_Lab.mp3").toURI().toString());
-    menuMp = new MediaPlayer(media);
-    /** song autostart after adding */
-    menuMp.setAutoPlay(true);
-    /** play song in infinity loop */
-    menuMp.setCycleCount(MediaPlayer.INDEFINITE);
+    if (difficulty == "Horror") {
+      Shot.damage = damageHorror;
+    }
+    if (difficulty == "Nightmare") {
+      Shot.damage = damageNightmare;
+    }
     menuMp.play();
-    MediaView mediaView = new MediaView(menuMp);
-    getChildren().add(mediaView);
-    Shot.init();
-    Enemy.init();
-    Block.init();
-
-    sMan.createTempFile(tempFileName);
     CreateMap();
 
     /** Reading args from file and writing the in to array */
@@ -237,11 +261,22 @@ public class GameRoot extends Pane {
 
         /** check if the tower is ready for shot */
         if (now / updateFrequency != checkForShootTimer.get()) {
+          // TODO
+          // wait();
+          /*
+           * synchronized (monitor) { try { monitor.notify(); monitor.wait(); } catch
+           * (InterruptedException e) {
+           */
+          // TODO Auto-generated catch block
           CheckForShooting();
           /** reduce cooldown */
           for (int i = 0; i < towers.size(); i++) {
             towers.get(i).timeToShoot -= shootTimeStep;
           }
+          // monitor.notify();
+          // e.printStackTrace();
+          // }
+          // }
         }
         /** update enemy position */
         if (now / updateFrequency != frameTimer.get()) {
@@ -312,6 +347,11 @@ public class GameRoot extends Pane {
 
   /** find target and generate a shot */
   public void CheckForShooting() {
+    /*
+     * synchronized (monitor) { try { monitor.wait(); } catch (InterruptedException e1) {
+     */
+    // TODO Auto-generated catch block
+    // e1.printStackTrace();
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < spawn[i].enemies.size(); j++) {
         if (spawn[i].enemies.get(j).health <= 0) {
@@ -342,5 +382,11 @@ public class GameRoot extends Pane {
         }
       }
     }
+
+    /*
+     * monitor.notify(); }
+     */
+    // }
+
   }
 }
