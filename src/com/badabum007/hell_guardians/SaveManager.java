@@ -23,6 +23,8 @@ public class SaveManager {
   String extension = ".sav";
   static String saveDir = "saves/";
   static String loadGameSave;
+  int saveNameParts = 3;
+  int dataArraySize = 2;
 
   SaveManager(String name) {
     tempFileName = name;
@@ -74,7 +76,7 @@ public class SaveManager {
   public void createSaveFile() throws IOException {
     String fileName =
         saveDir + new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime()) + "_"
-            + GameWindow.gameRoot.towers.size() + extension;
+            + GameWindow.gameRoot.yourMoney + extension;
     File file = new File(fileName);
     try {
       file.createNewFile();
@@ -91,4 +93,91 @@ public class SaveManager {
       e.printStackTrace();
     }
   }
+
+  /**
+   * get array of save files
+   * 
+   * @return allFiles - save files array
+   */
+  public static File[] getSaveList() {
+    File[] saveList;
+    File filesPath = new java.io.File(new File(saveDir).getAbsolutePath());
+    saveList = filesPath.listFiles();
+    return saveList;
+  }
+
+  /**
+   * save files list sorting - Java Quick Sort;
+   */
+  public File[] getSortedJavaList() {
+    File[] saveFiles = getSaveList();
+    int[] dataArrayOfFileList = new int[saveFiles.length];
+    for (int i = 0; i < saveFiles.length; i++) {
+        dataArrayOfFileList[i] = getResults(saveFiles[i].getName());
+    }
+    quickSort(dataArrayOfFileList, saveFiles, 0, dataArrayOfFileList.length - 1);
+    return saveFiles;
+  }
+
+  /**
+   * Java Qsort
+   * 
+   * @param arr - money array
+   * @param files - filenames array
+   */
+  void quickSort(int arr[], File files[], int left, int right) {
+    int index = partition(arr, files, left, right);
+    if (left < index - 1) {
+      quickSort(arr, files, left, index - 1);
+    }
+    if (index < right) {
+      quickSort(arr, files, index, right);
+    }
+  }
+
+  /**
+   * get results array
+   * 
+   * @param nameOfFile - filename
+   */
+  private Integer getResults(String filename) {
+    String[] array = filename.split("_");
+    array[saveNameParts - 1] = array[saveNameParts - 1].replace(extension, "");
+    return Integer.parseInt(array[saveNameParts - 1] );
+  }
+
+  /**
+   * finding index
+   * 
+   * @param arr - money array
+   * @param files - filenames array
+   */
+  int partition(int arr[], File files[], int left, int right) {
+    int i = left, j = right;
+    int tmp;
+    File temp;
+    int pivot = arr[(left + right) / 2];
+    while (i <= j) {
+      while (arr[i] < pivot) {
+        i++;
+      }
+      while (arr[j] > pivot) {
+        j--;
+      }
+      if (i <= j) {
+        tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+        
+        temp = files[i];
+        files[i] = files[j];
+        files[j] = temp;
+        
+        i++;
+        j--;
+      }
+    } ;
+    return i;
+  }
+
 }

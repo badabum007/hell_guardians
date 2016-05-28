@@ -48,7 +48,7 @@ public class Shooter implements Runnable {
                       GameWindow.gameRoot.towers.get(k).shootingCooldown;
                   try {
                     GameWindow.gameRoot.shots
-                        .add(new Shot(GameWindow.gameRoot.spawn[i].enemies.get(j),
+                        .add(new Shot(GameWindow.gameRoot.spawn[i],
                             GameWindow.gameRoot.towers.get(k).posX + GameWindow.blockSize / 2,
                             GameWindow.gameRoot.towers.get(k).posY + GameWindow.blockSize / 2));
                   } catch (IOException e) {
