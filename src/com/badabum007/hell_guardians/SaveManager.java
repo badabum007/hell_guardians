@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Random;
 
 /**
  * Class, that controls game saving operations
@@ -25,9 +26,16 @@ public class SaveManager {
   static String loadGameSave;
   int saveNameParts = 3;
   int dataArraySize = 2;
+  int filesToGen = 10;
+  String tempName = "logs";
+  int rndValue = 10000;
 
   SaveManager(String name) {
     tempFileName = name;
+  }
+
+  SaveManager() {
+    tempFileName = tempName;
   }
 
   /**
@@ -73,10 +81,10 @@ public class SaveManager {
    * 
    * @throws IOException
    */
-  public void createSaveFile() throws IOException {
+  public void createSaveFile(int size) throws IOException {
     String fileName =
         saveDir + new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime()) + "_"
-            + GameWindow.gameRoot.yourMoney + extension;
+            + size + "_" +((Integer)(new Random().nextInt(rndValue))) + extension;
     File file = new File(fileName);
     try {
       file.createNewFile();
@@ -113,7 +121,7 @@ public class SaveManager {
     File[] saveFiles = getSaveList();
     int[] dataArrayOfFileList = new int[saveFiles.length];
     for (int i = 0; i < saveFiles.length; i++) {
-        dataArrayOfFileList[i] = getResults(saveFiles[i].getName());
+      dataArrayOfFileList[i] = getResults(saveFiles[i].getName());
     }
     quickSort(dataArrayOfFileList, saveFiles, 0, dataArrayOfFileList.length - 1);
     return saveFiles;
@@ -143,7 +151,7 @@ public class SaveManager {
   private Integer getResults(String filename) {
     String[] array = filename.split("_");
     array[saveNameParts - 1] = array[saveNameParts - 1].replace(extension, "");
-    return Integer.parseInt(array[saveNameParts - 1] );
+    return Integer.parseInt(array[saveNameParts - 1]);
   }
 
   /**
@@ -168,16 +176,105 @@ public class SaveManager {
         tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
-        
+
         temp = files[i];
         files[i] = files[j];
         files[j] = temp;
-        
+
         i++;
         j--;
       }
     } ;
     return i;
+  }
+
+  /**
+   * Scala Quick Sort
+   * 
+   */
+  public File[] getSortedScalaList() {
+    File[] saveFiles = getSaveList();
+    int[] dataArrayOfFileList = new int[saveFiles.length];
+    for (int i = 0; i < saveFiles.length; i++) {
+      dataArrayOfFileList[i] = getResults(saveFiles[i].getName());
+    }
+    QSortScala qSortObject = new QSortScala();
+    qSortObject.sort(dataArrayOfFileList, saveFiles);
+    return saveFiles;
+  }
+
+  /**
+   * generates save games
+   * 
+   * @param num - number of saves to generate
+   * 
+   */
+  void generateSaves(int num) {
+    Random rnd = new Random();
+    long time;
+    filesToGen = num;
+    int currentCount;
+    int coordX = 0;
+    int coordY = 0;
+    int posX;
+    int posY;
+    int randTime = 50;
+    int dropNum = 2;
+    int undropChance = 8;
+    boolean[][] towerMap = new boolean[GameRoot.rows][GameRoot.columns];
+
+    for (int saveCounter = 0; saveCounter < filesToGen; saveCounter++) {
+      
+      for (int i = 0; i < GameRoot.rows; i++) {
+        for (int j = 0; j < GameRoot.columns; j++) {
+          towerMap[i][j] = false;
+        }
+      }
+      
+      currentCount = 0;
+      time = 0;
+      Shot.damage = 25;
+      createTempFile(tempFileName);
+
+      while (true) {
+        if (currentCount >= GameRoot.rows * GameRoot.columns) {
+          break;
+        }
+
+        time += rnd.nextInt(randTime);
+
+        /** check if the block is free */
+        do {
+          coordY = (int) (new Random().nextInt(GameRoot.rows));
+          coordX = (int) (new Random().nextInt(GameRoot.columns));
+        } while (towerMap[coordY][coordX] == true);
+        for (int i = 0; i < coordX; i++) {
+          if (towerMap[coordY][i] == false) {
+            coordX = i;
+            break;
+          }
+        }
+        towerMap[coordY][coordX] = true;
+
+        posX = coordX * GameWindow.blockSize + GameWindow.offsetXY;
+        posY = coordY * GameWindow.blockSize + GameWindow.offsetXY;
+
+        addToFile(tempFileName, posX + " " + posY + " " + time + "\n");
+        currentCount++;
+
+        if (rnd.nextInt(undropChance) == dropNum) {
+          break;
+        }
+      }
+      
+      try {
+        createSaveFile(currentCount);
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+
   }
 
 }

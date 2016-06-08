@@ -14,6 +14,7 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ListView;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.Glow;
@@ -38,23 +39,29 @@ import javafx.util.Duration;
  * @author badabum007
  */
 public class MainGameMenu extends Application {
-  
+  SaveManager saveMan = new SaveManager();
+
   public Thread mainThread;
   /** define the stage as public for communication between interface classes */
   public Stage theStage;
   /** create object for our buttons */
   private GameMenu gameMenu;
   /** layout for our title screen menu */
-  private Pane root;
+  public static Pane root;
   /** object of our class for all gaming stuff */
   public GameWindow gameWindow;
   /** music player object */
   private MediaPlayer menuMp;
   /** our stage parameters */
   public final static int height = 600, width = 800;
+  
+  Statistic stat = new Statistic();
 
   @Override
   public void start(Stage primaryStage) throws Exception {
+
+    //generate saves
+    //saveMan.generateSaves(500);
 
     mainThread = Thread.currentThread();
     root = new Pane();
@@ -119,14 +126,12 @@ public class MainGameMenu extends Application {
 
     final int distBetweenButtons = 10;
     /** setting menu position */
-    final int menuTransX = 550, menuTransY = 450;
+    final int menuTransX = 550, menuTransY = 300;
     /** offset for shuffling when menu is changed */
     final int offset = 800;
     double TransTtDur = 0.25;
     double TransTt1Dur = 0.5;
 
-   // int damageHorror = 25;
-    //int damageNightmare = 20;
 
     /**
      * Adds all necessary buttons and sets their behavior
@@ -169,7 +174,7 @@ public class MainGameMenu extends Application {
       MenuButton btnRePlay = new MenuButton("Watch replay");
       btnRePlay.setOnMouseClicked(event -> {
         try {
-          
+
           /** file choose dialog */
           FileFilter filter = new FileNameExtensionFilter("Hell guardians saves", "sav");
           JFileChooser dialog = new JFileChooser(new File("saves"));
@@ -189,6 +194,65 @@ public class MainGameMenu extends Application {
           /** stop playing and change scene */
           menuMp.stop();
           gameWindow.show(theStage);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      });
+
+      int listViewTransX = 100;
+      int listViewTransY = 20;
+      int sortIterations = 10;
+
+      MenuButton btnJSort = new MenuButton( "Java Sort");
+      btnJSort.setOnMouseClicked(event -> {
+        try {
+          ListView<String> listView = new ListView<String>();
+          long timeJava = System.currentTimeMillis();
+          listView.getItems().clear();
+          File[] sortedFiles = GameWindow.gameRoot.sMan.getSortedJavaList();
+          for (int i = 0; i < sortIterations; i++) {
+            sortedFiles = GameWindow.gameRoot.sMan.getSortedJavaList();
+          }
+          for (int i = 0; i < sortedFiles.length; i++) {
+            listView.getItems().add(sortedFiles[i].getName());
+          }
+          timeJava = System.currentTimeMillis() - timeJava;
+          listView.setTranslateX(listViewTransX);
+          listView.setTranslateY(listViewTransY);
+          getChildren().add(listView);
+          System.out.println("Java: " + timeJava);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      });
+      
+      MenuButton btnSSort = new MenuButton( "Scala Sort");
+      btnSSort.setOnMouseClicked(event -> {
+        try {
+          ListView<String> listView = new ListView<String>();
+          long timeScala = System.currentTimeMillis();
+          listView.getItems().clear();
+          File[] sortedFiles = GameWindow.gameRoot.sMan.getSortedScalaList();
+          for (int i = 0; i < sortIterations; i++) {
+            sortedFiles = GameWindow.gameRoot.sMan.getSortedScalaList();
+          }
+          for (int i = 0; i < sortedFiles.length; i++) {
+            listView.getItems().add(sortedFiles[i].getName());
+          }
+          timeScala = System.currentTimeMillis() - timeScala;
+          listView.setTranslateX(listViewTransX);
+          listView.setTranslateY(listViewTransY);
+          getChildren().add(listView);
+          System.out.println("Scala: " + timeScala);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      });
+      
+      MenuButton btnStats = new MenuButton( "Statistics");
+      btnStats.setOnMouseClicked(event -> {
+        try {
+          stat.showStatistic();
         } catch (Exception e) {
           e.printStackTrace();
         }
@@ -305,7 +369,7 @@ public class MainGameMenu extends Application {
         System.exit(0);
       });
 
-      menu0.getChildren().addAll(btnNewGame, btnRePlay, btnExit);
+      menu0.getChildren().addAll(btnNewGame, btnRePlay, btnJSort, btnSSort, btnStats, btnExit);
       getChildren().add(menu0);
 
       menu1.getChildren().addAll(btnBot, btnPlayer, btnBack);

@@ -339,7 +339,7 @@ public class GameRoot extends Pane implements Runnable {
                 this.stop();
                 is.close();
                 if (gameMode != "RePlay") {
-                  sMan.createSaveFile();
+                  sMan.createSaveFile(towers.size());
                 }
                 AnimationTimer exitTimer = new AnimationTimer() {
                   long exitClock = 0;
