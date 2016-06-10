@@ -18,31 +18,27 @@ import javafx.scene.text.Text;
 /**
  * Statistic creation and screen output
  * 
- * @author pixxx
+ * @author badabum007
  *
  */
 public class Statistic {
-  /** Статистика по каждой клетке */
+  /** level map with amount of towers in cell */
   int[][] statisticNumbers;
 
   /** Towers count */
   int sum;
 
-  /** Для округления */
   final static int round = 100;
 
   int averageTime;
 
-  /** Scala Class содержащий статистику */
+  /** Scala Class, containing save statistics */
   SList listScala;
 
   int max;
   int offsX = 450;
   int offsY = 20;
 
-  /**
-   * Инициализация данных
-   */
   public Statistic() {
     averageTime = 0;
     listScala = new SList();
@@ -58,7 +54,7 @@ public class Statistic {
   }
 
   /**
-   * Метод считывает статистические данные о клетках и записывает их в массив
+   * makes a map with general amount of towers in each cell
    */
   public void getStatisticNumbers() {
     int coordX, coordY;
@@ -100,7 +96,7 @@ public class Statistic {
   }
 
   /**
-   * Метод реализует вывод статистики на экран
+   * prints statistics to screen
    */
   public void showStatistic() {
     getStatisticNumbers();

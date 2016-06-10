@@ -126,7 +126,7 @@ public class MainGameMenu extends Application {
 
     final int distBetweenButtons = 10;
     /** setting menu position */
-    final int menuTransX = 550, menuTransY = 250;
+    final int menuTransX = 550, menuTransY = 280;
     /** offset for shuffling when menu is changed */
     final int offset = 800;
     double TransTtDur = 0.25;

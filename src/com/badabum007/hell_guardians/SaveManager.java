@@ -84,7 +84,7 @@ public class SaveManager {
   public void createSaveFile(int size) throws IOException {
     String fileName =
         saveDir + new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime()) + "_"
-            + size + "_" +((Integer)(new Random().nextInt(rndValue))) + extension;
+            + size + "_" + ((Integer) (new Random().nextInt(rndValue))) + extension;
     File file = new File(fileName);
     try {
       file.createNewFile();
@@ -224,13 +224,13 @@ public class SaveManager {
     boolean[][] towerMap = new boolean[GameRoot.rows][GameRoot.columns];
 
     for (int saveCounter = 0; saveCounter < filesToGen; saveCounter++) {
-      
+
       for (int i = 0; i < GameRoot.rows; i++) {
         for (int j = 0; j < GameRoot.columns; j++) {
           towerMap[i][j] = false;
         }
       }
-      
+
       currentCount = 0;
       time = 0;
       Shot.damage = 25;
@@ -266,7 +266,7 @@ public class SaveManager {
           break;
         }
       }
-      
+
       try {
         createSaveFile(currentCount);
       } catch (IOException e) {
@@ -276,34 +276,36 @@ public class SaveManager {
     }
 
   }
-  
-  
-  public static void showSaveNotation(){
+
+  /**
+   * creates and shows save file notation in a readable format
+   */
+  public static void showSaveNotation() {
     SNotList listNScala = new SNotList();
     int argsCount = 3;
-      try {
-        String[] args = new String[argsCount];
-        BufferedReader reader;
-        String line;
-        
+    try {
+      String[] args = new String[argsCount];
+      BufferedReader reader;
+      String line;
 
-        reader = new BufferedReader(new FileReader(SaveManager.loadGameSave));
-        listNScala.addEl( Integer.parseInt(reader.readLine()));
-        while ((line = reader.readLine()) != null) {
-          //System.out.println(line);
-          args = line.split(" ");
-          for (int i = 0; i < argsCount; i++) {
-            listNScala.addEl( Integer.parseInt(args[i]));
-          }
+
+      reader = new BufferedReader(new FileReader(SaveManager.loadGameSave));
+      listNScala.addEl(Integer.parseInt(reader.readLine()));
+      while ((line = reader.readLine()) != null) {
+        // System.out.println(line);
+        args = line.split(" ");
+        for (int i = 0; i < argsCount; i++) {
+          listNScala.addEl(Integer.parseInt(args[i]));
         }
-        reader.close();
-        
-        NotationReader nReader = new NotationReader();
-        nReader.read(listNScala.ret());
-      } catch (IOException e) {
-        e.printStackTrace();
       }
-    
+      reader.close();
+
+      NotationReader nReader = new NotationReader();
+      nReader.read(listNScala.ret());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
   }
 
 }

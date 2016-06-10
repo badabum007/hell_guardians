@@ -212,13 +212,13 @@ public class GameRoot extends Pane implements Runnable {
         BufferedReader reader = new BufferedReader(new FileReader(SaveManager.loadGameSave));
         String line;
         maxStringCount = 0;
-        /** read time and money for statistics*/
+        /** read time and money for statistics */
         Shot.damage = Integer.parseInt(reader.readLine());
         /** Counting string count for array memory allocation */
         while ((line = reader.readLine()) != null) {
           maxStringCount++;
         }
-        //System.out.println(maxStringCount);
+        // System.out.println(maxStringCount);
         reader.close();
 
         reader = new BufferedReader(new FileReader(SaveManager.loadGameSave));
@@ -226,7 +226,7 @@ public class GameRoot extends Pane implements Runnable {
         /** skip statistics */
         reader.readLine();
         while ((line = reader.readLine()) != null) {
-          //System.out.println(line);
+          // System.out.println(line);
           args = line.split(" ");
           for (int i = 0; i < argsCount; i++) {
             argsFromFile[counter][i] = Integer.parseInt(args[i]);
@@ -434,9 +434,8 @@ public class GameRoot extends Pane implements Runnable {
             if (towers.get(k).timeToShoot <= 0) {
               towers.get(k).timeToShoot = towers.get(k).shootingCooldown;
               try {
-                shots.add(
-                    new Shot(spawn[i], towers.get(k).posX + GameWindow.blockSize / 2,
-                        towers.get(k).posY + GameWindow.blockSize / 2));
+                shots.add(new Shot(spawn[i], towers.get(k).posX + GameWindow.blockSize / 2,
+                    towers.get(k).posY + GameWindow.blockSize / 2));
               } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
