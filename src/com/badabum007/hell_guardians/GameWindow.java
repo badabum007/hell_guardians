@@ -39,7 +39,7 @@ public class GameWindow {
 
     /** add awesome lava background */
     All.setPrefSize(width, height);
-    InputStream is = Files.newInputStream(Paths.get("res/images/texture.jpg"));
+    InputStream is = Files.newInputStream(Paths.get("images/texture.jpg"));
     Image img = new Image(is);
     ImageView imgView = new ImageView(img);
     imgView.setFitWidth(width);

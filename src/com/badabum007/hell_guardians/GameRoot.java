@@ -131,7 +131,7 @@ public class GameRoot extends Pane implements Runnable {
 
       /** setting money picture */
       int moneyTransX = 620;
-      InputStream is = Files.newInputStream(Paths.get("res/images/souls.png"));
+      InputStream is = Files.newInputStream(Paths.get("images/souls.png"));
       Image img = new Image(is);
       ImageView imgView = new ImageView(img);
       imgView.setFitWidth(imgWidth);
@@ -169,7 +169,7 @@ public class GameRoot extends Pane implements Runnable {
     thread = new Thread(this);
 
     Media media = new Media(
-        new File("res/music/Gonzalo_Varela_-_03_-_Underwater_Lab.mp3").toURI().toString());
+        new File("music/Gonzalo_Varela_-_03_-_Underwater_Lab.mp3").toURI().toString());
     menuMp = new MediaPlayer(media);
     /** song autostart after adding */
     /** play song in infinity loop */
@@ -332,7 +332,7 @@ public class GameRoot extends Pane implements Runnable {
             if (spawn[i].update() < 0) {
               InputStream is;
               try {
-                is = Files.newInputStream(Paths.get("res/images/game_over.jpg"));
+                is = Files.newInputStream(Paths.get("images/game_over.jpg"));
                 Image img = new Image(is);
                 ImageView imgView = new ImageView(img);
                 getChildren().add(imgView);

@@ -48,7 +48,7 @@ public class Tower extends Pane {
   public Tower(long x, long y) throws IOException {
     timeToShoot = 0;
 
-    InputStream is = Files.newInputStream(Paths.get("res/images/sarcher_sprites.png"));
+    InputStream is = Files.newInputStream(Paths.get("images/sarcher_sprites.png"));
     Image img = new Image(is);
     is.close();
     this.imageView = new ImageView(img);

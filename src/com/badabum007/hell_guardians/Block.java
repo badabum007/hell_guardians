@@ -73,7 +73,7 @@ public class Block extends Pane {
   public static void init(){
     /** block image adding */
     try {
-      is = Files.newInputStream(Paths.get("res/images/block.jpg"));
+      is = Files.newInputStream(Paths.get("images/block.jpg"));
       img_block = new Image(is);
       is.close();
     } catch (IOException e) {

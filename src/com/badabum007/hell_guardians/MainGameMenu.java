@@ -61,7 +61,7 @@ public class MainGameMenu extends Application {
   public void start(Stage primaryStage) throws Exception {
 
     //generate saves
-    //saveMan.generateSaves(500);
+    //saveMan.generateSaves(9000);
 
     mainThread = Thread.currentThread();
     root = new Pane();
@@ -73,7 +73,7 @@ public class MainGameMenu extends Application {
 
     /** adding music */
     Media media = new Media(
-        new File("res/music/Gonzalo_Varela_-_06_-_Abandoned_Souls.mp3").toURI().toString());
+        new File("music/Gonzalo_Varela_-_06_-_Abandoned_Souls.mp3").toURI().toString());
     menuMp = new MediaPlayer(media);
     /** autostart when program is launched */
     menuMp.setAutoPlay(true);
@@ -86,7 +86,7 @@ public class MainGameMenu extends Application {
     root.setPrefSize(width, height);
 
     /** setting background */
-    InputStream is = Files.newInputStream(Paths.get("res/images/main_menu.png"));
+    InputStream is = Files.newInputStream(Paths.get("images/main_menu.png"));
     Image img = new Image(is);
     ImageView imgView = new ImageView(img);
     imgView.setFitWidth(width);
@@ -107,7 +107,7 @@ public class MainGameMenu extends Application {
     Scene scene = new Scene(root);
     theStage.setTitle("Hell Guardians");
     theStage.setScene(scene);
-    theStage.getIcons().add(new Image("file:res/images/icon.png"));
+    theStage.getIcons().add(new Image("file:images/icon.png"));
 
     is.close();
     theStage.show();
@@ -201,9 +201,9 @@ public class MainGameMenu extends Application {
       
       MenuButton btnReadNotation = new MenuButton("Read Notation");
       btnReadNotation.setOnMouseClicked(event -> {
-        try {
+      /*  try {
 
-          /** file choose dialog */
+          *//** file choose dialog *//*
           FileFilter filter = new FileNameExtensionFilter("Hell guardians saves", "sav");
           JFileChooser dialog = new JFileChooser(new File("saves"));
           dialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -223,7 +223,7 @@ public class MainGameMenu extends Application {
 
         } catch (Exception e) {
           e.printStackTrace();
-        }
+        }*/
       });
 
       int listViewTransX = 100;
@@ -232,7 +232,7 @@ public class MainGameMenu extends Application {
 
       MenuButton btnJSort = new MenuButton( "Java Sort");
       btnJSort.setOnMouseClicked(event -> {
-        try {
+       /* try {
           ListView<String> listView = new ListView<String>();
           long timeJava = System.currentTimeMillis();
           listView.getItems().clear();
@@ -250,12 +250,12 @@ public class MainGameMenu extends Application {
           System.out.println("Java: " + timeJava);
         } catch (Exception e) {
           e.printStackTrace();
-        }
+        }*/
       });
       
       MenuButton btnSSort = new MenuButton( "Scala Sort");
       btnSSort.setOnMouseClicked(event -> {
-        try {
+      /*  try {
           ListView<String> listView = new ListView<String>();
           long timeScala = System.currentTimeMillis();
           listView.getItems().clear();
@@ -273,16 +273,16 @@ public class MainGameMenu extends Application {
           System.out.println("Scala: " + timeScala);
         } catch (Exception e) {
           e.printStackTrace();
-        }
+        }*/
       });
       
       MenuButton btnStats = new MenuButton( "Statistics");
       btnStats.setOnMouseClicked(event -> {
-        try {
+      /*  try {
           stat.showStatistic();
         } catch (Exception e) {
           e.printStackTrace();
-        }
+        }*/
       });
 
       MenuButton btnBack = new MenuButton("Back");
@@ -307,7 +307,7 @@ public class MainGameMenu extends Application {
 
       MenuButton btnBot = new MenuButton("Bot game");
       btnBot.setOnMouseClicked(event -> {
-        /** enable bot playing */
+        /** enable bot playing *//*
         GameRoot.gameMode = "Auto";
 
         getChildren().add(menu2);
@@ -323,12 +323,12 @@ public class MainGameMenu extends Application {
 
         translateTransition.setOnFinished(evt -> {
           getChildren().remove(menu1);
-        });
+        });*/
       });
 
       MenuButton btnPlayer = new MenuButton("Player game");
       btnPlayer.setOnMouseClicked(event -> {
-        GameRoot.gameMode = "Normal";
+       /* GameRoot.gameMode = "Normal";
 
         getChildren().add(menu2);
         TranslateTransition translateTransition =
@@ -343,7 +343,7 @@ public class MainGameMenu extends Application {
 
         translateTransition.setOnFinished(evt -> {
           getChildren().remove(menu1);
-        });
+        });*/
       });
 
       MenuButton btnHorror = new MenuButton("Horror");
@@ -425,7 +425,7 @@ public class MainGameMenu extends Application {
       text.getFont();
       /** load custom font */
       Font font;
-      font = Font.loadFont(new FileInputStream(new File("res/fonts/Kankin.otf")), 20);
+      font = Font.loadFont(new FileInputStream(new File("fonts/Kankin.otf")), 20);
       text.setFont(font);
       text.setFill(Color.WHITE);
 

@@ -64,7 +64,7 @@ public class Enemy extends Pane {
   public static void init() throws IOException {
 
     /** load enemy sprite and enable enemy animation */
-    is = Files.newInputStream(Paths.get("res/images/hero_sprites.png"));
+    is = Files.newInputStream(Paths.get("images/hero_sprites.png"));
     img = new Image(is);
     is.close();
   }

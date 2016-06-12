@@ -86,7 +86,7 @@ public class Shot {
   }
   
   public static void init() throws IOException{
-    is = Files.newInputStream(Paths.get("res/images/sarcher_sprites.png"));
+    is = Files.newInputStream(Paths.get("images/sarcher_sprites.png"));
     img = new Image(is);
     is.close();
   }
